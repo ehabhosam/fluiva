@@ -1,0 +1,107 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int @id @default(autoincrement())
+  full_name     String
+  email         String @unique
+  password_hash String
+
+  plans         Plan[]
+  categories    Category[]
+}
+
+model Category {
+  id          Int @id @default(autoincrement())
+  name        String 
+  image_url   String
+  default     Boolean @default(false)
+
+  user        User? @relation(fields: [user_id], references: [id])
+  user_id     Int?
+  plan        Plan[]
+}
+
+model Plan {
+  id          Int @id @default(autoincrement())
+  title       String 
+  description String @default("")
+  type        PlanType 
+
+  owner       User @relation(fields: [owner_id], references: [id])
+  owner_id    Int
+  category    Category @relation(fields: [category_id], references: [id])
+  category_id Int
+  tasks       Task[]
+  routines    Routine[]
+  periods     Period[]
+
+  // TODO: Migrate this 
+  created_at  DateTime @default(now())
+}
+
+model Task {
+  id              Int @id @default(autoincrement())
+  title           String
+  description     String @default("")
+  required_time   Int
+  priority        Priority
+  divisible       Boolean @default(false)
+  
+  plan            Plan @relation(fields: [plan_id], references: [id])
+  plan_id         Int
+  blocks          Block[]
+}
+
+model Routine {
+  id              Int @id @default(autoincrement())
+  title           String
+  description     String @default("")
+  repeated_units  Int
+
+  plan            Plan @relation(fields: [plan_id], references: [id])
+  plan_id         Int
+  blocks          Block[]
+}
+
+model Period {
+  id            Int @id @default(autoincrement())
+  index         Int 
+
+  plan          Plan @relation(fields: [plan_id], references: [id])
+  plan_id       Int
+  blocks        Block[]
+}
+
+model Block {
+  id            Int @id @default(autoincrement())
+  order         Int
+  completed     Boolean @default(false)
+
+  period        Period @relation(fields: [period_id], references: [id])
+  period_id     Int
+  task          Task? @relation(fields: [task_id], references: [id])
+  task_id       Int?
+  routine       Routine? @relation(fields: [routine_id], references: [id])
+  routine_id    Int?
+}
+
+
+enum Priority {
+  LOW
+  NORMAL
+  HIGH
+}
+
+enum PlanType {
+  SWIFT
+  STANDARD
+  STRATEGIC
+}
