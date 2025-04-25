@@ -8,7 +8,6 @@ import (
 )
 
 type Planner struct {
-	title       string
 	build_unit  string
 	period_unit string
 	tasks       []Task
@@ -19,7 +18,6 @@ type Planner struct {
 }
 
 func NewPlanner(
-	title string,
 	build_unit string,
 	period_unit string,
 	tasks []Task,
@@ -27,7 +25,6 @@ func NewPlanner(
 	n_periods int,
 	n_blocks int) *Planner {
 	return &Planner{
-		title:       title,
 		build_unit:  build_unit,
 		period_unit: period_unit,
 		tasks:       tasks,
@@ -42,12 +39,12 @@ func totalTime(tasks []Task, routines []Routine, periods int) int {
 	sum := 0
 
 	for _, task := range tasks {
-		sum += task.required_time
+		sum += task.RequiredTime
 	}
 
 	routineSum := 0
 	for _, routine := range routines {
-		routineSum += routine.required_time
+		routineSum += routine.RequiredTime
 	}
 	sum += routineSum * periods
 
@@ -57,7 +54,7 @@ func totalTime(tasks []Task, routines []Routine, periods int) int {
 func totalTasksTime(tasks []Task) int {
 	sum := 0
 	for _, task := range tasks {
-		sum += task.required_time
+		sum += task.RequiredTime
 	}
 	return sum
 }
@@ -68,14 +65,14 @@ func leastBlocks(tasks []Task, routines []Routine, periods int) int {
 
 	// Find largest unbreakable task time
 	for _, task := range tasks {
-		if !task.is_breakable && task.required_time > blocks {
-			blocks = task.required_time
+		if !task.IsBreakable && task.RequiredTime > blocks {
+			blocks = task.RequiredTime
 		}
 	}
 
 	// Add routine times if any exist
 	for _, routine := range routines {
-		blocks += routine.required_time
+		blocks += routine.RequiredTime
 	}
 
 	return blocks
@@ -159,13 +156,13 @@ func (p *Planner) TotalTimeInPeriodUnit() string {
 }
 
 func compareTasks(a, b Task) bool {
-	if !a.is_breakable {
+	if !a.IsBreakable {
 		return true
 	}
-	if !b.is_breakable {
+	if !b.IsBreakable {
 		return false
 	}
-	return a.required_time < b.required_time
+	return a.RequiredTime < b.RequiredTime
 }
 
 func (p *Planner) isPlacesAvailable(freq int, index int) bool {
@@ -176,11 +173,11 @@ func (p *Planner) isPlacesAvailable(freq int, index int) bool {
 }
 
 func (p *Planner) addRoutine(routine Routine) {
-	cells := make([]TableCell, routine.required_time)
+	cells := make([]TableCell, routine.RequiredTime)
 	for i := range cells {
 		cells[i] = TableCell{
-			_type:   "routine",
-			todo_id: routine.id,
+			Type:   "routine",
+			TodoId: routine.Id,
 		}
 	}
 
@@ -220,8 +217,8 @@ func (p *Planner) generateAvailability(tbf int) (int, error) {
 			}
 
 			item := TableCell{
-				_type:   p.table[shortestIndex][len(p.table[shortestIndex])-1]._type,
-				todo_id: p.table[shortestIndex][len(p.table[shortestIndex])-1].todo_id,
+				Type:   p.table[shortestIndex][len(p.table[shortestIndex])-1].Type,
+				TodoId: p.table[shortestIndex][len(p.table[shortestIndex])-1].TodoId,
 			}
 
 			for periodIndex, period := range p.table {
@@ -259,7 +256,7 @@ func (p *Planner) GenerateTable() [][]TableCell {
 
 	// split tasks by priority
 	for _, task := range tasksClone {
-		switch task.priority {
+		switch task.Priority {
 		case 1:
 			highPriority = append(highPriority, task)
 		case 2:
@@ -272,10 +269,10 @@ func (p *Planner) GenerateTable() [][]TableCell {
 	addTaskToResultArray := func(task Task) {
 		// Define default taskBlocksFrequency & handle undivisible
 		var taskBlocksFrequency int
-		if !task.is_breakable {
-			taskBlocksFrequency = task.required_time
+		if !task.IsBreakable {
+			taskBlocksFrequency = task.RequiredTime
 		} else {
-			taskBlocksFrequency = utils.DeviseAndCeil(task.required_time, p.n_periods)
+			taskBlocksFrequency = utils.DeviseAndCeil(task.RequiredTime, p.n_periods)
 		}
 
 		changed := false
@@ -283,14 +280,14 @@ func (p *Planner) GenerateTable() [][]TableCell {
 
 		pushToResultArray := func(index int) {
 			for x := 0; x < taskBlocksFrequency; x++ {
-				if task.required_time == 0 {
+				if task.RequiredTime == 0 {
 					break
 				}
 				p.table[index] = append(p.table[index], TableCell{
-					_type:   "task",
-					todo_id: task.id,
+					Type:   "task",
+					TodoId: task.Id,
 				})
-				task.required_time--
+				task.RequiredTime--
 			}
 		}
 
@@ -305,7 +302,7 @@ func (p *Planner) GenerateTable() [][]TableCell {
 					continue
 				}
 
-				if !task.is_breakable {
+				if !task.IsBreakable {
 					if p.isPlacesAvailable(taskBlocksFrequency, i) {
 						pushToResultArray(i)
 					}
@@ -314,13 +311,13 @@ func (p *Planner) GenerateTable() [][]TableCell {
 
 				if changed {
 					remainingPeriods = p.n_periods - (i + 1)
-					taskBlocksFrequency = utils.DeviseAndCeil(task.required_time, remainingPeriods)
+					taskBlocksFrequency = utils.DeviseAndCeil(task.RequiredTime, remainingPeriods)
 					changed = false
 				}
 
 				if p.isPlacesAvailable(taskBlocksFrequency, i) {
 					pushToResultArray(i)
-					if task.required_time == 0 {
+					if task.RequiredTime == 0 {
 						return
 					}
 				} else {
@@ -329,18 +326,18 @@ func (p *Planner) GenerateTable() [][]TableCell {
 						changed = true
 					}
 					pushToResultArray(i)
-					if task.required_time == 0 {
+					if task.RequiredTime == 0 {
 						return
 					}
 				}
 			}
 
-			if task.required_time > 0 {
-				if !task.is_breakable {
+			if task.RequiredTime > 0 {
+				if !task.IsBreakable {
 					avIndex, _ := p.generateAvailability(taskBlocksFrequency)
 					pushToResultArray(avIndex)
 				} else {
-					taskBlocksFrequency = utils.DeviseAndCeil(task.required_time, p.n_periods)
+					taskBlocksFrequency = utils.DeviseAndCeil(task.RequiredTime, p.n_periods)
 					pusher()
 				}
 			}
@@ -369,17 +366,17 @@ func (p *Planner) LogResultArray() {
 	for i, period := range p.table {
 		fmt.Printf("Period %d: ", i+1)
 		for _, cell := range period {
-			switch cell._type {
+			switch cell.Type {
 			case "task":
 				for _, task := range p.tasks {
-					if task.id == cell.todo_id {
-						fmt.Printf("%-15s", fmt.Sprintf("Task-[%s] ", task.title))
+					if task.Id == cell.TodoId {
+						fmt.Printf("%-15s", fmt.Sprintf("Task-[%s]   ", task.Title))
 					}
 				}
 			case "routine":
 				for _, routine := range p.routines {
-					if routine.id == cell.todo_id {
-						fmt.Printf("%-15s", fmt.Sprintf("Routine-[%s] ", routine.title))
+					if routine.Id == cell.TodoId {
+						fmt.Printf("%-15s", fmt.Sprintf("Routine-[%s]   ", routine.Title))
 					}
 				}
 			}
@@ -393,21 +390,57 @@ func TestSamplePlanner() {
 	tasks := []Task{
 		{
 			Todo: Todo{
-				id:            "1",
-				title:         "Study Math",
-				required_time: 3,
+				Id:           "1",
+				Title:        "medicinal chemistry",
+				RequiredTime: 10,
 			},
-			priority:     1,
-			is_breakable: true,
+			Priority:    3,
+			IsBreakable: true,
 		},
 		{
 			Todo: Todo{
-				id:            "2",
-				title:         "Write Report",
-				required_time: 4,
+				Id:           "2",
+				Title:        "sterial dosage form",
+				RequiredTime: 4,
 			},
-			priority:     2,
-			is_breakable: false,
+			Priority:    2,
+			IsBreakable: true,
+		},
+		{
+			Todo: Todo{
+				Id:           "3",
+				Title:        "clinical pharmacy",
+				RequiredTime: 20,
+			},
+			Priority:    3,
+			IsBreakable: true,
+		},
+		{
+			Todo: Todo{
+				Id:           "4",
+				Title:        "phytochemistry",
+				RequiredTime: 10,
+			},
+			Priority:    2,
+			IsBreakable: true,
+		},
+		{
+			Todo: Todo{
+				Id:           "5",
+				Title:        "biostatics",
+				RequiredTime: 4,
+			},
+			Priority:    1,
+			IsBreakable: true,
+		},
+		{
+			Todo: Todo{
+				Id:           "6",
+				Title:        "parasitology",
+				RequiredTime: 4,
+			},
+			Priority:    1,
+			IsBreakable: true,
 		},
 	}
 
@@ -415,29 +448,26 @@ func TestSamplePlanner() {
 	routines := []Routine{
 		{
 			Todo: Todo{
-				id:            "3",
-				title:         "Exercise",
-				required_time: 1,
-			},
-		},
-		{
-			Todo: Todo{
-				id:            "4",
-				title:         "Read News",
-				required_time: 1,
+				Id:           "1",
+				Title:        "Cook & Clean",
+				RequiredTime: 1,
 			},
 		},
 	}
 
+	blocks := 5 // 5 hours per day
+	totalTasksTime := totalTasksTime(tasks)
+	periods := utils.DeviseAndCeil(blocks, totalTasksTime)
+	blocks += 1 // the hour for doing routine
+
 	// Create new planner
 	planner := NewPlanner(
-		"Weekly Schedule",
 		"hour",
 		"day",
 		tasks,
 		routines,
-		3, // n_periods
-		6, // n_blocks
+		periods, // n_periods
+		blocks,  // n_blocks
 	)
 
 	// Generate and log table

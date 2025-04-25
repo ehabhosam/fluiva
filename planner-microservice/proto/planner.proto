@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package planner;
+
+option go_package = "./proto";
+
+service PlannerService {
+    rpc GeneratePlan (PlanRequest) returns (PlanResponse) {}
+}
+
+message Todo {
+    string id = 1;
+    string title = 2;
+    string description = 3;
+    int32 required_time = 4;
+    string type = 5;
+}
+
+message Task {
+    Todo todo = 1;
+    int32 priority = 2;
+    bool is_breakable = 3;
+}
+
+message Routine {
+    Todo todo = 1;
+}
+
+message TableCell {
+    string type = 1;
+    string todo_id = 2;
+}
+
+message PlanRequest {
+    string build_unit = 1;
+    string period_unit = 2;
+    repeated Task tasks = 3;
+    repeated Routine routines = 4;
+    int32 n_periods = 5;
+    int32 n_blocks = 6;
+}
+
+message PlanResponse {
+    repeated Period periods = 1;
+    string total_time = 2;
+}
+
+message Period {
+    repeated TableCell cells = 1;
+}

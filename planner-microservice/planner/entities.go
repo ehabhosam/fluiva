@@ -3,11 +3,11 @@ package planner
 import "planner-microservice/utils"
 
 type Todo struct {
-	id            string
-	title         string
-	description   string
-	required_time int
-	_type         string
+	Id           string
+	Title        string
+	Description  string
+	RequiredTime int
+	Type         string
 }
 
 func NewTodo(
@@ -20,16 +20,16 @@ func NewTodo(
 	}
 
 	return &Todo{
-		id:          utils.GenerateID(),
-		title:       title,
-		description: description,
+		Id:          utils.GenerateID(),
+		Title:       title,
+		Description: description,
 	}
 }
 
 type Task struct {
 	Todo
-	priority     int
-	is_breakable bool
+	Priority    int
+	IsBreakable bool
 }
 
 func NewTask(
@@ -39,9 +39,9 @@ func NewTask(
 	priority int,
 	is_breakable bool) *Task {
 	return &Task{
-		Todo:         *NewTodo(title, description, required_time, "task"),
-		priority:     priority,
-		is_breakable: is_breakable,
+		Todo:        *NewTodo(title, description, required_time, "task"),
+		Priority:    priority,
+		IsBreakable: is_breakable,
 	}
 }
 
@@ -59,8 +59,8 @@ func NewRoutine(
 }
 
 type TableCell struct {
-	_type   string
-	todo_id string
+	Type   string
+	TodoId string
 }
 
 func NewTableCell(_type string, todo_id string) *TableCell {
@@ -69,7 +69,7 @@ func NewTableCell(_type string, todo_id string) *TableCell {
 	}
 
 	return &TableCell{
-		_type:   _type,
-		todo_id: todo_id,
+		Type:   _type,
+		TodoId: todo_id,
 	}
 }
