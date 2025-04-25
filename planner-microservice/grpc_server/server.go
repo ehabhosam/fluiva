@@ -39,7 +39,7 @@ func (s *PlannerServer) GeneratePlan(ctx context.Context, req *pb.PlanRequest) (
 	}
 
 	// Create new planner
-	p := planner.NewPlanner(
+	planner := planner.NewPlanner(
 		req.BuildUnit,
 		req.PeriodUnit,
 		tasks,
@@ -49,7 +49,7 @@ func (s *PlannerServer) GeneratePlan(ctx context.Context, req *pb.PlanRequest) (
 	)
 
 	// Generate table
-	table := p.GenerateTable()
+	table := planner.GenerateTable()
 
 	// Convert table to response format
 	periods := make([]*pb.Period, len(table))
@@ -68,6 +68,6 @@ func (s *PlannerServer) GeneratePlan(ctx context.Context, req *pb.PlanRequest) (
 
 	return &pb.PlanResponse{
 		Periods:   periods,
-		TotalTime: p.TotalTimeInPeriodUnit(),
+		TotalTime: planner.TotalTimeInPeriodUnit(),
 	}, nil
 }

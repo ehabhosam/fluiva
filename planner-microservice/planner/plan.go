@@ -406,42 +406,6 @@ func TestSamplePlanner() {
 			Priority:    2,
 			IsBreakable: true,
 		},
-		{
-			Todo: Todo{
-				Id:           "3",
-				Title:        "clinical pharmacy",
-				RequiredTime: 20,
-			},
-			Priority:    3,
-			IsBreakable: true,
-		},
-		{
-			Todo: Todo{
-				Id:           "4",
-				Title:        "phytochemistry",
-				RequiredTime: 10,
-			},
-			Priority:    2,
-			IsBreakable: true,
-		},
-		{
-			Todo: Todo{
-				Id:           "5",
-				Title:        "biostatics",
-				RequiredTime: 4,
-			},
-			Priority:    1,
-			IsBreakable: true,
-		},
-		{
-			Todo: Todo{
-				Id:           "6",
-				Title:        "parasitology",
-				RequiredTime: 4,
-			},
-			Priority:    1,
-			IsBreakable: true,
-		},
 	}
 
 	// Create sample routines
@@ -455,19 +419,14 @@ func TestSamplePlanner() {
 		},
 	}
 
-	blocks := 5 // 5 hours per day
-	totalTasksTime := totalTasksTime(tasks)
-	periods := utils.DeviseAndCeil(blocks, totalTasksTime)
-	blocks += 1 // the hour for doing routine
-
 	// Create new planner
 	planner := NewPlanner(
 		"hour",
 		"day",
 		tasks,
 		routines,
-		periods, // n_periods
-		blocks,  // n_blocks
+		5, // n_periods
+		5, // n_blocks
 	)
 
 	// Generate and log table

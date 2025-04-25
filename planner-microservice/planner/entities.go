@@ -20,9 +20,11 @@ func NewTodo(
 	}
 
 	return &Todo{
-		Id:          utils.GenerateID(),
-		Title:       title,
-		Description: description,
+		Id:           utils.GenerateID(),
+		Title:        title,
+		Description:  description,
+		RequiredTime: required_time,
+		Type:         _type,
 	}
 }
 
