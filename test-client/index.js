@@ -26,44 +26,52 @@ function main() {
     grpc.credentials.createInsecure(),
   );
 
+  const tasks = [
+    {
+      todo: {
+        id: "1",
+        title: "medicinal chemistry",
+        description: "",
+        required_time: 10,
+        type: "task",
+      },
+      priority: 3,
+      is_breakable: true,
+    },
+    {
+      todo: {
+        id: "2",
+        title: "sterial dosage form",
+        description: "",
+        required_time: 4,
+        type: "task",
+      },
+      priority: 2,
+      is_breakable: true,
+    },
+  ];
+
+  const routines = [
+    {
+      todo: {
+        id: "1",
+        title: "Cook & Clean",
+        description: "",
+        required_time: 1,
+        type: "routine",
+      },
+    },
+  ];
+
+  const todosMap = new Map();
+  tasks.forEach((task) => todosMap.set(task.todo.id, task.todo));
+  routines.forEach((routine) => todosMap.set(routine.todo.id, routine.todo));
+
   const request = {
     build_unit: "hour",
     period_unit: "day",
-    tasks: [
-      {
-        todo: {
-          id: "1",
-          title: "medicinal chemistry",
-          description: "",
-          required_time: 10,
-          type: "task",
-        },
-        priority: 3,
-        is_breakable: true,
-      },
-      {
-        todo: {
-          id: "2",
-          title: "sterial dosage form",
-          description: "",
-          required_time: 4,
-          type: "task",
-        },
-        priority: 2,
-        is_breakable: true,
-      },
-    ],
-    routines: [
-      {
-        todo: {
-          id: "1",
-          title: "Cook & Clean",
-          description: "",
-          required_time: 1,
-          type: "routine",
-        },
-      },
-    ],
+    tasks,
+    routines,
     n_periods: 5,
     n_blocks: 5,
   };
@@ -80,10 +88,9 @@ function main() {
     response.periods.forEach((period, index) => {
       console.log(`\nPeriod ${index + 1}:`);
       period.cells.forEach((cell) => {
-        console.log(`- ${cell.type}: ${cell.todo_id}`);
+        console.log(`- ${cell.type}: ${todosMap.get(cell.todo_id).title}`);
       });
     });
-    console.log("\n", response.periods[0].cells);
   });
 }
 
