@@ -1,0 +1,4 @@
+project todo list
+[ ] load test the go service
+[ ] Use the job queue in the go microservice
+[ ] Make the grpc client responds instantly with job queued and send the result when it's ready with the job_id and status by not closing the connection.

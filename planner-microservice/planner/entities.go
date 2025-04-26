@@ -1,7 +1,5 @@
 package planner
 
-import "planner-microservice/utils"
-
 type Todo struct {
 	Id           string
 	Title        string
@@ -11,6 +9,7 @@ type Todo struct {
 }
 
 func NewTodo(
+	id string,
 	title string,
 	description string,
 	required_time int,
@@ -20,7 +19,7 @@ func NewTodo(
 	}
 
 	return &Todo{
-		Id:           utils.GenerateID(),
+		Id:           id,
 		Title:        title,
 		Description:  description,
 		RequiredTime: required_time,
@@ -35,13 +34,14 @@ type Task struct {
 }
 
 func NewTask(
+	id string,
 	title string,
 	description string,
 	required_time int,
 	priority int,
 	is_breakable bool) *Task {
 	return &Task{
-		Todo:        *NewTodo(title, description, required_time, "task"),
+		Todo:        *NewTodo(id, title, description, required_time, "task"),
 		Priority:    priority,
 		IsBreakable: is_breakable,
 	}
@@ -52,11 +52,12 @@ type Routine struct {
 }
 
 func NewRoutine(
+	id string,
 	title string,
 	description string,
 	required_time int) *Routine {
 	return &Routine{
-		Todo: *NewTodo(title, description, required_time, "routine"),
+		Todo: *NewTodo(id, title, description, required_time, "routine"),
 	}
 }
 

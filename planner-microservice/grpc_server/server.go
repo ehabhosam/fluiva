@@ -20,6 +20,7 @@ func (s *PlannerServer) GeneratePlan(ctx context.Context, req *pb.PlanRequest) (
 
 	for i, protoTask := range req.Tasks {
 		tasks[i] = *planner.NewTask(
+			protoTask.Todo.Id,
 			protoTask.Todo.Title,
 			protoTask.Todo.Description,
 			int(protoTask.Todo.RequiredTime),
@@ -32,6 +33,7 @@ func (s *PlannerServer) GeneratePlan(ctx context.Context, req *pb.PlanRequest) (
 	routines := make([]planner.Routine, len(req.Routines))
 	for i, protoRoutine := range req.Routines {
 		routines[i] = *planner.NewRoutine(
+			protoRoutine.Todo.Id,
 			protoRoutine.Todo.Title,
 			protoRoutine.Todo.Description,
 			int(protoRoutine.Todo.RequiredTime),
