@@ -90,12 +90,10 @@ func MaxBlocks(tasks []Task, routines []Routine, blocks_unit string) int {
 		maxPossibleBlocks = 4
 	}
 
-	periods := 1
-	blocks := totalTime(tasks, routines, periods)
+	blocks := totalTime(tasks, routines, 1)
 
-	for blocks > maxPossibleBlocks {
-		periods++
-		blocks = totalTime(tasks, routines, periods)
+	if blocks > maxPossibleBlocks {
+		return maxPossibleBlocks
 	}
 
 	return blocks
