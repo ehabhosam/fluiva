@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PlannerServiceClient interface {
 	GeneratePlan(ctx context.Context, in *PlanRequest, opts ...grpc.CallOption) (*PlanResponse, error)
+	GetTimeConstraints(ctx context.Context, in *TimeConstraintsRequest, opts ...grpc.CallOption) (*TimeConstraintsResponse, error)
 }
 
 type plannerServiceClient struct {
@@ -42,11 +43,21 @@ func (c *plannerServiceClient) GeneratePlan(ctx context.Context, in *PlanRequest
 	return out, nil
 }
 
+func (c *plannerServiceClient) GetTimeConstraints(ctx context.Context, in *TimeConstraintsRequest, opts ...grpc.CallOption) (*TimeConstraintsResponse, error) {
+	out := new(TimeConstraintsResponse)
+	err := c.cc.Invoke(ctx, "/planner.PlannerService/GetTimeConstraints", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PlannerServiceServer is the server API for PlannerService service.
 // All implementations must embed UnimplementedPlannerServiceServer
 // for forward compatibility
 type PlannerServiceServer interface {
 	GeneratePlan(context.Context, *PlanRequest) (*PlanResponse, error)
+	GetTimeConstraints(context.Context, *TimeConstraintsRequest) (*TimeConstraintsResponse, error)
 	mustEmbedUnimplementedPlannerServiceServer()
 }
 
@@ -56,6 +67,9 @@ type UnimplementedPlannerServiceServer struct {
 
 func (UnimplementedPlannerServiceServer) GeneratePlan(context.Context, *PlanRequest) (*PlanResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GeneratePlan not implemented")
+}
+func (UnimplementedPlannerServiceServer) GetTimeConstraints(context.Context, *TimeConstraintsRequest) (*TimeConstraintsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTimeConstraints not implemented")
 }
 func (UnimplementedPlannerServiceServer) mustEmbedUnimplementedPlannerServiceServer() {}
 
@@ -88,6 +102,24 @@ func _PlannerService_GeneratePlan_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PlannerService_GetTimeConstraints_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TimeConstraintsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlannerServiceServer).GetTimeConstraints(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/planner.PlannerService/GetTimeConstraints",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlannerServiceServer).GetTimeConstraints(ctx, req.(*TimeConstraintsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PlannerService_ServiceDesc is the grpc.ServiceDesc for PlannerService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +130,10 @@ var PlannerService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GeneratePlan",
 			Handler:    _PlannerService_GeneratePlan_Handler,
+		},
+		{
+			MethodName: "GetTimeConstraints",
+			Handler:    _PlannerService_GetTimeConstraints_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

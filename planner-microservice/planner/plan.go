@@ -60,7 +60,7 @@ func totalTasksTime(tasks []Task) int {
 }
 
 // Least number of blocks required to complete all tasks and routines
-func leastBlocks(tasks []Task, routines []Routine, periods int) int {
+func LeastBlocks(tasks []Task, routines []Routine, periods int) int {
 	blocks := 1
 
 	// Find largest unbreakable task time
@@ -78,7 +78,7 @@ func leastBlocks(tasks []Task, routines []Routine, periods int) int {
 	return blocks
 }
 
-func maxBlocks(tasks []Task, routines []Routine, blocks_unit string) int {
+func MaxBlocks(tasks []Task, routines []Routine, blocks_unit string) int {
 	var maxPossibleBlocks int
 
 	switch blocks_unit {
@@ -113,7 +113,7 @@ func IsValid(tasks []Task, routines []Routine, blocks_unit string) bool {
 		maxPossibleBlocks = 4
 	}
 
-	leastBlocks := leastBlocks(tasks, routines, 1)
+	leastBlocks := LeastBlocks(tasks, routines, 1)
 	return leastBlocks <= maxPossibleBlocks
 }
 

@@ -6,6 +6,7 @@ option go_package = "./proto";
 
 service PlannerService {
     rpc GeneratePlan (PlanRequest) returns (PlanResponse) {}
+    rpc GetTimeConstraints (TimeConstraintsRequest) returns (TimeConstraintsResponse) {}
 }
 
 message Todo {
@@ -47,4 +48,20 @@ message PlanResponse {
 
 message Period {
     repeated TableCell cells = 1;
+}
+
+message TimeConstraintsRequest {
+    // Tasks to consider for time constraints calculation
+    repeated Task tasks = 1;
+    // Routines to consider for time constraints calculation
+    repeated Routine routines = 2;
+    // The unit for blocks (e.g., "hour", "day")
+    string blocks_unit = 3;
+}
+
+message TimeConstraintsResponse {
+    int32 least_blocks = 1;
+    int32 max_blocks = 2;
+    int32 least_periods = 3;
+    int32 max_periods = 4;
 }
