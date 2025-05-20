@@ -2,74 +2,55 @@ package grpc_server
 
 import (
 	"context"
-	"planner-microservice/planner"
+	"fmt"
+
+	// "planner-microservice/planner"
 	pb "planner-microservice/proto"
+	"planner-microservice/worker"
+	"time"
 )
 
 type PlannerServer struct {
 	pb.UnimplementedPlannerServiceServer
+	jobQueue chan worker.Job
 }
 
-func NewPlannerServer() *PlannerServer {
-	return &PlannerServer{}
+func NewPlannerServer(workerCount int) *PlannerServer {
+	server := &PlannerServer{
+		jobQueue: make(chan worker.Job, 10), // Buffer size of 10
+	}
+
+	// Initialize worker pool
+	for i := 0; i < workerCount; i++ {
+		go worker.StartWorker(server.jobQueue)
+	}
+
+	return server
 }
 
 func (s *PlannerServer) GeneratePlan(ctx context.Context, req *pb.PlanRequest) (*pb.PlanResponse, error) {
-	// Convert proto tasks to planner tasks
-	tasks := make([]planner.Task, len(req.Tasks))
-
-	for i, protoTask := range req.Tasks {
-		tasks[i] = *planner.NewTask(
-			protoTask.Todo.Id,
-			protoTask.Todo.Title,
-			protoTask.Todo.Description,
-			int(protoTask.Todo.RequiredTime),
-			int(protoTask.Priority),
-			protoTask.IsBreakable,
-		)
+	// Create a job
+	jobID := fmt.Sprintf("%d", time.Now().UnixNano())
+	job := worker.Job{
+		ID:           jobID,
+		Request:      req,
+		ResponseChan: make(chan *pb.PlanResponse, 1),
+		ErrorChan:    make(chan error, 1),
 	}
 
-	// Convert proto routines to planner routines
-	routines := make([]planner.Routine, len(req.Routines))
-	for i, protoRoutine := range req.Routines {
-		routines[i] = *planner.NewRoutine(
-			protoRoutine.Todo.Id,
-			protoRoutine.Todo.Title,
-			protoRoutine.Todo.Description,
-			int(protoRoutine.Todo.RequiredTime),
-		)
-	}
-
-	// Create new planner
-	planner := planner.NewPlanner(
-		req.BuildUnit,
-		req.PeriodUnit,
-		tasks,
-		routines,
-		int(req.NPeriods),
-		int(req.NBlocks),
-	)
-
-	// Generate table
-	table := planner.GenerateTable()
-
-	// Convert table to response format
-	periods := make([]*pb.Period, len(table))
-	for i, period := range table {
-		cells := make([]*pb.TableCell, len(period))
-		for j, cell := range period {
-			cells[j] = &pb.TableCell{
-				Type:   cell.Type,
-				TodoId: cell.TodoId,
-			}
+	// Submit job to worker pool
+	select {
+	case s.jobQueue <- job:
+		// Wait for result or context cancellation
+		select {
+		case response := <-job.ResponseChan:
+			return response, nil
+		case err := <-job.ErrorChan:
+			return nil, err
+		case <-ctx.Done():
+			return nil, ctx.Err()
 		}
-		periods[i] = &pb.Period{
-			Cells: cells,
-		}
+	default:
+		return nil, fmt.Errorf("job queue is full")
 	}
-
-	return &pb.PlanResponse{
-		Periods:   periods,
-		TotalTime: planner.TotalTimeInPeriodUnit(),
-	}, nil
 }
