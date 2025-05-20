@@ -1,0 +1,41 @@
+{
+  "build_unit": "hour",
+  "period_unit": "day",
+  "tasks": [
+    {
+      "todo": {
+        "id": "1",
+        "title": "medicinal chemistry",
+        "description": "",
+        "required_time": 10,
+        "type": "task"
+      },
+      "priority": 3,
+      "is_breakable": true
+    },
+    {
+      "todo": {
+        "id": "2",
+        "title": "sterial dosage form",
+        "description": "",
+        "required_time": 4,
+        "type": "task"
+      },
+      "priority": 2,
+      "is_breakable": true
+    }
+  ],
+  "routines": [
+    {
+      "todo": {
+        "id": "1",
+        "title": "Cook & Clean",
+        "description": "",
+        "required_time": 1,
+        "type": "routine"
+      }
+    }
+  ],
+  "n_periods": 5,
+  "n_blocks": 5
+}
