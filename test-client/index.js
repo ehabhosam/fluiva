@@ -496,7 +496,7 @@ function main() {
           repeated_units: 1,
         },
       ],
-      n_periods: 38,
+      n_periods: 35,
       n_blocks: 18,
     };
 

@@ -4,6 +4,9 @@ import (
 	"context"
 	"planner-microservice/planner"
 	pb "planner-microservice/proto"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type PlannerServer struct {
@@ -15,6 +18,8 @@ func NewPlannerServer() *PlannerServer {
 }
 
 func (s *PlannerServer) GeneratePlan(ctx context.Context, req *pb.PlanRequest) (*pb.PlanResponse, error) {
+
+	// ... (rest of your existing GeneratePlan logic)
 	// Convert proto tasks to planner tasks
 	tasks := make([]planner.Task, len(req.Tasks))
 
@@ -49,6 +54,11 @@ func (s *PlannerServer) GeneratePlan(ctx context.Context, req *pb.PlanRequest) (
 		int(req.NPeriods),
 		int(req.NBlocks),
 	)
+
+	// Validate plan parameters
+	if !planner.ValidatePlanParameters() {
+		return nil, status.Error(codes.InvalidArgument, "invalid plan parameters")
+	}
 
 	// Generate table
 	table := planner.GenerateTable()

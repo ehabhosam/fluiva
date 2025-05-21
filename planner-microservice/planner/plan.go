@@ -163,6 +163,39 @@ func compareTasks(a, b Task) bool {
 	return a.RequiredTime < b.RequiredTime
 }
 
+func (p *Planner) ValidatePlanParameters() bool {
+	// to validate the plan parameters:
+	// - calculate the total time of tasks
+	// - calculate the total time of routines per period
+	// - subtract the total time of routines per period from number of blocks
+	// - if number of blocks goes less than 1 then fail immediately
+	// - divide the total time of tasks by the remaining blocks and ceil the result
+	// - if the result is less than the number of periods then fail (return false)
+
+	totalTasksTime := 0
+	for _, task := range p.tasks {
+		totalTasksTime += task.RequiredTime
+	}
+
+	totalRoutinesTimePerPeriod := 0
+	for _, routine := range p.routines {
+		totalRoutinesTimePerPeriod += routine.RequiredTime
+	}
+
+	remainingBlocks := p.n_blocks - totalRoutinesTimePerPeriod
+	if remainingBlocks < 1 {
+		return false
+	}
+
+	periodsNeeded := int(math.Ceil(float64(totalTasksTime) / float64(remainingBlocks)))
+	if periodsNeeded > p.n_periods {
+		return false
+	}
+
+	// passed then you're good to go ...
+	return true
+}
+
 func (p *Planner) isPlacesAvailable(freq int, index int) bool {
 	if len(p.table[index])+freq > p.n_blocks {
 		return false
