@@ -5,3 +5,4 @@
 - [x] Add an endpoint to get valid time constraints
 - [x] Fix the bug that is causing the big request not to be fulfilled
 - [x] Add a validation layer on the plan before generating it
+- [ ] setup a new server with supabase as a db and prisma to manipulate it with initial schema

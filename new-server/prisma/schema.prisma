@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String @id
+  full_name String
+  email     String @unique
+
+  plans Plan[]
+
+  created_at DateTime  @default(now())
+  deleted_at DateTime?
+}
+
+model Plan {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String   @default("")
+  type        PlanType
+
+  user    User     @relation(fields: [user_id], references: [id])
+  user_id String
+  todos   Todo[]
+  periods Period[]
+
+  created_at DateTime  @default(now())
+  deleted_at DateTime?
+}
+
+model Todo {
+  id            Int       @id @default(autoincrement())
+  title         String
+  description   String    @default("")
+  required_time Int
+  priority      Priority?
+  is_breakable  Boolean   @default(true)
+
+  type    TodoType
+  plan    Plan     @relation(fields: [plan_id], references: [id])
+  plan_id Int
+  blocks  Block[]
+}
+
+model Period {
+  id    Int @id @default(autoincrement())
+  index Int
+
+  plan    Plan    @relation(fields: [plan_id], references: [id])
+  plan_id Int
+  blocks  Block[]
+}
+
+model Block {
+  id      Int       @id @default(autoincrement())
+  index   Int
+  done_at DateTime?
+
+  period    Period @relation(fields: [period_id], references: [id])
+  period_id Int
+  todo      Todo   @relation(fields: [todo_id], references: [id])
+  todo_id   Int
+}
+
+enum TodoType {
+  TASK
+  ROUTINE
+}
+
+enum Priority {
+  LOW
+  NORMAL
+  HIGH
+}
+
+enum PlanType {
+  DAILY
+  WEEKLY
+  MONTHLY
+}
