@@ -1,0 +1,75 @@
+{
+  "build_unit": "hour",
+  "period_unit": "day",
+  "tasks": [
+    {
+      "todo": {
+        "id": "1",
+        "title": "Task 1",
+        "description": "",
+        "required_time": 10,
+        "type": "task"
+      },
+      "priority": 2,
+      "is_breakable": false
+    },
+    {
+      "todo": {
+        "id": "2",
+        "title": "Task 2",
+        "description": "",
+        "required_time": 16,
+        "type": "task"
+      },
+      "priority": 3,
+      "is_breakable": true
+    },
+    {
+      "todo": {
+        "id": "3",
+        "title": "Task 3",
+        "description": "",
+        "required_time": 18,
+        "type": "task"
+      },
+      "priority": 1,
+      "is_breakable": true
+    },
+    {
+      "todo": {
+        "id": "4",
+        "title": "Task 4",
+        "description": "",
+        "required_time": 16,
+        "type": "task"
+      },
+      "priority": 2,
+      "is_breakable": true
+    },
+    {
+      "todo": {
+        "id": "5",
+        "title": "Task 5",
+        "description": "",
+        "required_time": 12,
+        "type": "task"
+      },
+      "priority": 3,
+      "is_breakable": false
+    }
+  ],
+  "routines": [
+    {
+      "todo": {
+        "id": "r1",
+        "title": "Routine 1",
+        "description": "",
+        "required_time": 1,
+        "type": "routine"
+      },
+      "repeated_units": 1
+    }
+  ],
+  "n_periods": 15,
+  "n_blocks": 6
+}
