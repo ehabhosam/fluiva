@@ -7,7 +7,7 @@ const TestApiResponse = ({ token }: { token: string | null }) => {
 
   useEffect(() => {
     console.log("performing request with token", token);
-    fetch("http://localhost:3000", {
+    fetch("http://localhost:8000", {
       headers: {
         Authorization: `Bearer ${token}`,
         apikey: token || "",
@@ -17,7 +17,6 @@ const TestApiResponse = ({ token }: { token: string | null }) => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        // console.log(response);
         const result = await response.json();
         console.log({ result });
         setData(result);

@@ -4,9 +4,10 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { Request } from 'express';
+// @ts-expect-error module is somehow not found
+import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from 'src/public.decorator';
 
