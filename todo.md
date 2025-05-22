@@ -8,3 +8,6 @@
 - [x] setup a new server with supabase as a db and prisma to manipulate it with initial schema
 - [x] gaurd the api with supabase authentication
 - [ ] setup a grpc client module to connect to the go service
+- [ ] write the actual NestJS REST API:
+  - [ ] plan API endpoints
+  - [ ] user authentication API
