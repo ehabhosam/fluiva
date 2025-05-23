@@ -9,11 +9,6 @@
 - [x] gaurd the api with supabase authentication
 - [x] setup a grpc client module to connect to the go service
 - [x] solve the bug in least_blocks calculation at the go microservice
-- [ ] write the actual NestJS REST API:
-  - [ ] plan API endpoints
-        create a plan
-        create todos (tasks and routines)
-        generate a plan (the actual table)
-        create periods
-        create blocks
-  - [ ] user authentication API
+- [x] write the actual NestJS REST API:
+  - [x] plan API endpoints
+  - [x] user authentication API
