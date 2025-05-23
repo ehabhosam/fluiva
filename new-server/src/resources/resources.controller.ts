@@ -63,6 +63,7 @@ export class ResourcesController {
     };
 
     this.resources.push(newResource);
+    console.log('user', user);
 
     return {
       message: 'Resource created successfully',
