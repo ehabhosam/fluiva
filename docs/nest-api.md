@@ -25,6 +25,7 @@ Retrieves a list of all plans belonging to the authenticated user.
 **Endpoint**: `GET /plan`
 
 **Response**:
+
 ```json
 [
   {
@@ -59,9 +60,11 @@ Retrieves complete data for a specific plan including all todos, periods, and bl
 **Endpoint**: `GET /plan/:id`
 
 **Parameters**:
+
 - `id`: Plan ID (integer)
 
 **Response**:
+
 ```json
 {
   "id": 1,
@@ -139,6 +142,47 @@ Retrieves complete data for a specific plan including all todos, periods, and bl
 }
 ```
 
+### Get Time Constraints
+
+Retrieves the valid time constraints for a specific plan type.
+
+**Endpoint**: `GET /planner/time-constraints`
+
+**Request Body**:
+
+```json
+{
+  "tasks": [
+    {
+      "title": "Math Assignment",
+      "description": "Complete calculus problems 1-20",
+      "requiredTime": 120,
+      "priority": "HIGH",
+      "isBreakable": true
+    }
+  ],
+  "routines": [
+    {
+      "title": "Morning Exercise",
+      "description": "Daily workout routine",
+      "requiredTime": 30
+    }
+  ],
+  "blocksUnit": "hour"
+}
+```
+
+**Response**:
+
+```json
+{
+  "leastBlocks": 2,
+  "maxBlocks": 8,
+  "leastPeriods": 1,
+  "maxPeriods": 4
+}
+```
+
 ### Generate Plan
 
 Creates a new plan with todos and automatically generates periods and blocks based on the provided configuration.
@@ -146,6 +190,7 @@ Creates a new plan with todos and automatically generates periods and blocks bas
 **Endpoint**: `POST /plan`
 
 **Request Body**:
+
 ```json
 {
   "title": "My Weekly Study Plan",
@@ -187,6 +232,7 @@ Creates a new plan with todos and automatically generates periods and blocks bas
 ```
 
 **Response**:
+
 ```json
 {
   "plan": {
@@ -211,9 +257,11 @@ Updates the metadata of a specific plan.
 **Endpoint**: `POST /plan/:id`
 
 **Parameters**:
+
 - `id`: Plan ID (integer)
 
 **Request Body**:
+
 ```json
 {
   "title": "Updated Weekly Study Plan",
@@ -225,6 +273,7 @@ Updates the metadata of a specific plan.
 All fields in the request body are optional.
 
 **Response**:
+
 ```json
 {
   "id": 1,
@@ -244,6 +293,7 @@ Changes the ordering (indexes) of periods within a plan.
 **Endpoint**: `POST /plan/reorder-periods`
 
 **Request Body**:
+
 ```json
 {
   "periods": [
@@ -264,6 +314,7 @@ Changes the ordering (indexes) of periods within a plan.
 ```
 
 **Response**:
+
 ```json
 [
   {
@@ -291,6 +342,7 @@ Moves a block from one period to another and/or changes its position within a pe
 **Endpoint**: `POST /plan/move-block`
 
 **Request Body**:
+
 ```json
 {
   "blockId": 1,
@@ -300,6 +352,7 @@ Moves a block from one period to another and/or changes its position within a pe
 ```
 
 **Response**:
+
 ```json
 {
   "id": 1,
@@ -327,6 +380,7 @@ Changes the ordering (indexes) of blocks within a single period.
 **Endpoint**: `POST /plan/reorder-blocks`
 
 **Request Body**:
+
 ```json
 {
   "periodId": 1,
@@ -348,6 +402,7 @@ Changes the ordering (indexes) of blocks within a single period.
 ```
 
 **Response**:
+
 ```json
 [
   {
@@ -377,6 +432,7 @@ Changes the ordering (indexes) of blocks within a single period.
 ## Data Models
 
 ### Plan Types
+
 ```
 enum PlanType {
   DAILY
@@ -386,6 +442,7 @@ enum PlanType {
 ```
 
 ### Todo Types
+
 ```
 enum TodoType {
   TASK
@@ -394,6 +451,7 @@ enum TodoType {
 ```
 
 ### Priority Levels
+
 ```
 enum Priority {
   LOW
