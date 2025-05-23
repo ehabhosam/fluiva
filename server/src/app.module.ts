@@ -1,38 +1,27 @@
 import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
-import { ApiKeyGuard } from './app.gaurd';
 import { AppService } from './app.service';
-import { AuthGuard } from './modules/auth/auth.gaurd';
-import { AuthModule } from './modules/auth/auth.module';
-import { BlockModule } from './modules/block/block.module';
-import { PlanModule } from './modules/plan/plan.module';
-import { PrismaModule } from './modules/prisma/prisma.module';
-import { RoutineModule } from './modules/routine/routine.module';
-import { TaskModule } from './modules/task/task.module';
-import { CategoryModule } from './modules/category/category.module';
+import { ResourcesModule } from './resources/resources.module';
+import { AuthModule } from './auth/auth.module';
+import { PlannerModule } from './planner/planner.module';
+import { UserModule } from './user/user.module';
+import { PrismaModule } from './prisma/prisma.module';
+import { PlanModule } from './plan/plan.module';
 
 @Module({
   imports: [
-    PrismaModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     AuthModule,
+    ResourcesModule,
+    PlannerModule,
+    UserModule,
+    PrismaModule,
     PlanModule,
-    RoutineModule,
-    TaskModule,
-    BlockModule,
-    CategoryModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    {
-      provide: APP_GUARD,
-      useClass: ApiKeyGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-  ],
+  providers: [AppService],
 })
 export class AppModule {}
