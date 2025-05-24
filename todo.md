@@ -12,3 +12,14 @@
 - [x] write the actual NestJS REST API:
   - [x] plan API endpoints
   - [x] user authentication API
+- [ ] resolve current frontend bugs:
+  - [ ] time units should be specified by the plan type
+  - [ ] changing the periods should update the blocks and vice versa (one class instance per render/ or a proxy)
+  - [ ] test the drag and drop functionalities to make sure they work as expected
+- implement the completed functinoality integration
+- [ ] new design system
+  - [ ] check the colors system
+  - [ ] ui components special styling
+  - [ ] custom fonts
+- [ ] integrate localization to the frontend (replace hardcoded content with json files)
+- [ ] look for a vps service to host the system and deploy an mvp version to release it for testing feedback
