@@ -489,4 +489,42 @@ Error responses include a message describing the error:
 4. For plan generation, ensure all required fields are provided
 5. All time values for todos are in minutes
 
+## User API
+
+### Get User Profile
+
+Retrieves the profile information of the authenticated user.
+
+**Endpoint**: `GET /user/profile`
+
+**Response**:
+
+```json
+{
+  "id": "e1a66c88-ddb5-4876-8719-e5ec4eda63a4",
+  "email": "user@example.com",
+  "name": "John Doe",
+  "created_at": "2023-05-10T15:30:00.000Z",
+  "updated_at": "2023-05-15T09:45:00.000Z"
+}
+```
+
+### Upsert User
+
+Creates a new user record or updates an existing one based on the authenticated user information.
+
+**Endpoint**: `POST /user/upsert`
+
+**Response**:
+
+```json
+{
+  "id": "e1a66c88-ddb5-4876-8719-e5ec4eda63a4",
+  "email": "user@example.com",
+  "name": "John Doe",
+  "created_at": "2023-05-10T15:30:00.000Z",
+  "updated_at": "2023-05-23T14:20:00.000Z"
+}
+```
+
 This API documentation provides the necessary information for frontend applications to effectively interact with the PlanSync backend services.

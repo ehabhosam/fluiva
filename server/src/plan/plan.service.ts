@@ -353,6 +353,8 @@ export class PlanService {
         },
       });
 
+      console.log('created plan', plan);
+
       // 2. Create todos (tasks and routines)
       const createdTasks = await this.createTasks(tx, plan.id, dto.tasks);
       const createdRoutines = await this.createRoutines(
@@ -361,6 +363,9 @@ export class PlanService {
         dto.routines,
       );
 
+      console.log('created tasks', createdTasks);
+      console.log('created routines', createdRoutines);
+
       // 3. Prepare request for planner microservice
       const plannerRequest = this.preparePlannerRequest(
         dto,
@@ -368,9 +373,13 @@ export class PlanService {
         createdRoutines,
       );
 
+      console.log(plannerRequest);
+
       // 4. Call the planner microservice to generate the plan
       const plannerResponse =
         await this.plannerService.generatePlan(plannerRequest);
+
+      console.log('planner response', plannerResponse);
 
       // 5. Create periods and blocks based on the response
       await this.createPeriodsAndBlocks(tx, plan.id, plannerResponse.periods);
@@ -503,7 +512,25 @@ export class PlanService {
     planId: number,
     generatedPeriods: any[],
   ) {
-    const createdPeriods = [];
+    // 1. Create all periods at once
+    const periodsToCreate = generatedPeriods.map((_, index) => ({
+      index,
+      plan_id: planId,
+    }));
+
+    await tx.period.createMany({
+      data: periodsToCreate,
+      skipDuplicates: false,
+    });
+
+    // Fetch all the created periods to get their IDs
+    const periods = await tx.period.findMany({
+      where: { plan_id: planId },
+      orderBy: { index: 'asc' },
+    });
+
+    // 2. Collect all blocks to create
+    const blocksToCreate = [];
 
     for (
       let periodIndex = 0;
@@ -511,19 +538,8 @@ export class PlanService {
       periodIndex++
     ) {
       const periodData = generatedPeriods[periodIndex];
+      const periodId = periods[periodIndex].id;
 
-      // Create the period
-      const period = await tx.period.create({
-        data: {
-          index: periodIndex,
-          plan: {
-            connect: { id: planId },
-          },
-        },
-      });
-
-      // Create blocks for this period
-      const blocks = [];
       for (
         let blockIndex = 0;
         blockIndex < periodData.cells.length;
@@ -533,27 +549,32 @@ export class PlanService {
 
         if (cell.todo_id) {
           const todoId = parseInt(cell.todo_id, 10);
-          const block = await tx.block.create({
-            data: {
-              index: blockIndex,
-              period: {
-                connect: { id: period.id },
-              },
-              todo: {
-                connect: { id: todoId },
-              },
-            },
+          blocksToCreate.push({
+            index: blockIndex,
+            period_id: periodId,
+            todo_id: todoId,
           });
-          blocks.push(block);
         }
       }
+    }
 
-      createdPeriods.push({
-        ...period,
-        blocks,
+    // Create all blocks at once
+    if (blocksToCreate.length > 0) {
+      await tx.block.createMany({
+        data: blocksToCreate,
+        skipDuplicates: false,
       });
     }
 
-    return createdPeriods;
+    // Return the created structure
+    return await tx.period.findMany({
+      where: { plan_id: planId },
+      include: {
+        blocks: {
+          orderBy: { index: 'asc' },
+        },
+      },
+      orderBy: { index: 'asc' },
+    });
   }
 }
