@@ -151,3 +151,20 @@ export interface ApiError {
   message: string;
   error: string;
 }
+
+// User Types
+export interface UserProfile {
+  id: string;
+  email: string;
+  name: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface UserUpsertResponse {
+  id: string;
+  email: string;
+  name: string;
+  created_at: string;
+  updated_at: string;
+}

@@ -9,7 +9,7 @@ export const plannerApi = {
   getTimeConstraints: (
     data: TimeConstraintsRequest,
   ): Promise<TimeConstraintsResponse> => {
-    return api.get("/planner/time-constraints", { data });
+    return api.post("/planner/time-constraints", { data });
   },
 };
 
