@@ -1,35 +1,26 @@
 import { plannerApi } from "@/api/planner";
 import {
+  PlanType,
   RoutineInput,
   TaskInput,
   TimeConstraintsRequest,
-  TimeConstraintsResponse,
 } from "@/api/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import useTimeConstaints from "@/hooks/use-time-constraints";
+import { getUnitsFromPlanType } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { CircleCheck } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import ControlledCounter from "./ControlledCounter";
 
 interface TimeConstraintsStepProps {
   tasks: TaskInput[];
   routines: RoutineInput[];
-  onComplete: (data: {
-    blocksUnit: string;
-    periodUnit: string;
-    nBlocks: number;
-    nPeriods: number;
-  }) => void;
+  onComplete: (data: { nBlocks: number; nPeriods: number }) => void;
   onBack: () => void;
+  type: PlanType;
 }
 
 const TimeConstraintsStep: React.FC<TimeConstraintsStepProps> = ({
@@ -37,21 +28,32 @@ const TimeConstraintsStep: React.FC<TimeConstraintsStepProps> = ({
   routines,
   onComplete,
   onBack,
+  type,
 }) => {
-  const [blocksUnit, setBlocksUnit] = useState<string>("minutes");
-  const [periodUnit, setPeriodUnit] = useState<string>("hours");
-  const [nBlocks, setNBlocks] = useState<number>(0);
-  const [nPeriods, setNPeriods] = useState<number>(0);
+  const {
+    nBlocks,
+    nPeriods,
+    incrementBlocks,
+    incrementPeriods,
+    decrementBlocks,
+    decrementPeriods,
+    setInitialConstraints,
+  } = useTimeConstaints(tasks, routines);
   const [errors, setErrors] = useState<{
     nBlocks?: string;
     nPeriods?: string;
   }>({});
 
+  // Determine units based on plan type
+  const [buildUnit] = getUnitsFromPlanType(type);
+
+  console.log({ type, buildUnit });
+
   // Fetch time constraints
   const timeConstraintsPayload: TimeConstraintsRequest = {
     tasks,
     routines,
-    blocksUnit,
+    blocksUnit: buildUnit,
   };
 
   const {
@@ -61,60 +63,21 @@ const TimeConstraintsStep: React.FC<TimeConstraintsStepProps> = ({
   } = useQuery({
     queryKey: ["timeConstraints", timeConstraintsPayload],
     queryFn: () => plannerApi.getTimeConstraints(timeConstraintsPayload),
-    onSuccess: (data) => {
-      // Set default values based on min constraints
-      if (data) {
-        setNBlocks(data.leastBlocks);
-        setNPeriods(data.MaxPeriods);
-      }
-    },
-    // Only fetch if we have tasks or routines
-    enabled: tasks.length > 0 || routines.length > 0,
   });
 
-  // Mock data for preview
-  const mockConstraints: TimeConstraintsResponse = {
-    leastBlocks: 6,
-    maxBlocks: 12,
-    leastPeriods: 2,
-    maxPeriods: 5,
-  };
-
-  // Use mock data until real data is available
-  const displayedConstraints = constraints || mockConstraints;
+  useEffect(() => {
+    if (constraints) {
+      setInitialConstraints(constraints.max_blocks, constraints.least_blocks);
+    }
+  }, [constraints]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate constraints
-    const newErrors: {
-      nBlocks?: string;
-      nPeriods?: string;
-    } = {};
-
-    if (nBlocks < displayedConstraints.leastBlocks) {
-      newErrors.nBlocks = `Must be at least ${displayedConstraints.leastBlocks}`;
-    } else if (nBlocks > displayedConstraints.maxBlocks) {
-      newErrors.nBlocks = `Must be at most ${displayedConstraints.maxBlocks}`;
-    }
-
-    if (nPeriods < displayedConstraints.leastPeriods) {
-      newErrors.nPeriods = `Must be at least ${displayedConstraints.leastPeriods}`;
-    } else if (nPeriods > displayedConstraints.maxPeriods) {
-      newErrors.nPeriods = `Must be at most ${displayedConstraints.maxPeriods}`;
-    }
-
-    setErrors(newErrors);
-
-    // If no errors, complete form
-    if (Object.keys(newErrors).length === 0) {
-      onComplete({
-        blocksUnit,
-        periodUnit,
-        nBlocks,
-        nPeriods,
-      });
-    }
+    onComplete({
+      nBlocks,
+      nPeriods,
+    });
   };
 
   return (
@@ -145,38 +108,19 @@ const TimeConstraintsStep: React.FC<TimeConstraintsStepProps> = ({
                 <div className="flex items-center justify-between">
                   <h4 className="text-lg font-medium">Blocks</h4>
                   <div className="inline-flex items-center rounded-full bg-plansync-purple-100 px-3 py-1 text-sm font-medium text-plansync-purple-800">
-                    {displayedConstraints.leastBlocks} -{" "}
-                    {displayedConstraints.maxBlocks}
+                    {constraints.least_blocks} - {constraints.max_blocks}
                   </div>
                 </div>
-                <p className="text-muted-foreground text-sm">
-                  Blocks are individual time slots for tasks and routines
-                </p>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="blocks-unit">Block Time Unit</Label>
-                    <Select value={blocksUnit} onValueChange={setBlocksUnit}>
-                      <SelectTrigger id="blocks-unit">
-                        <SelectValue placeholder="Select unit" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="minutes">Minutes</SelectItem>
-                        <SelectItem value="hours">Hours</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
                     <Label htmlFor="n-blocks">Number of Blocks</Label>
-                    <Input
-                      id="n-blocks"
-                      type="number"
-                      value={nBlocks}
-                      onChange={(e) =>
-                        setNBlocks(parseInt(e.target.value) || 0)
-                      }
-                      className={errors.nBlocks ? "border-red-500" : ""}
+                    <ControlledCounter
+                      count={nBlocks}
+                      increment={incrementBlocks}
+                      decrement={decrementBlocks}
+                      min={constraints.least_blocks}
+                      max={constraints.max_blocks}
                     />
                     {errors.nBlocks && (
                       <p className="text-sm text-red-500">{errors.nBlocks}</p>
@@ -191,39 +135,19 @@ const TimeConstraintsStep: React.FC<TimeConstraintsStepProps> = ({
                 <div className="flex items-center justify-between">
                   <h4 className="text-lg font-medium">Periods</h4>
                   <div className="inline-flex items-center rounded-full bg-plansync-teal-100 px-3 py-1 text-sm font-medium text-plansync-teal-800">
-                    {displayedConstraints.leastPeriods} -{" "}
-                    {displayedConstraints.maxPeriods}
+                    {constraints.least_periods} - {constraints.max_periods}
                   </div>
                 </div>
-                <p className="text-muted-foreground text-sm">
-                  Periods are larger time divisions containing multiple blocks
-                </p>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="period-unit">Period Time Unit</Label>
-                    <Select value={periodUnit} onValueChange={setPeriodUnit}>
-                      <SelectTrigger id="period-unit">
-                        <SelectValue placeholder="Select unit" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="hours">Hours</SelectItem>
-                        <SelectItem value="days">Days</SelectItem>
-                        <SelectItem value="weeks">Weeks</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
                     <Label htmlFor="n-periods">Number of Periods</Label>
-                    <Input
-                      id="n-periods"
-                      type="number"
-                      value={nPeriods}
-                      onChange={(e) =>
-                        setNPeriods(parseInt(e.target.value) || 0)
-                      }
-                      className={errors.nPeriods ? "border-red-500" : ""}
+                    <ControlledCounter
+                      count={nPeriods}
+                      increment={incrementPeriods}
+                      decrement={decrementPeriods}
+                      min={constraints.least_periods}
+                      max={constraints.max_periods}
                     />
                     {errors.nPeriods && (
                       <p className="text-sm text-red-500">{errors.nPeriods}</p>

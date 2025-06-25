@@ -91,10 +91,10 @@ export interface TimeConstraintsRequest {
 }
 
 export interface TimeConstraintsResponse {
-  leastBlocks: number;
-  maxBlocks: number;
-  leastPeriods: number;
-  maxPeriods: number;
+  least_blocks: number;
+  max_blocks: number;
+  least_periods: number;
+  max_periods: number;
 }
 
 export interface GeneratePlanRequest {

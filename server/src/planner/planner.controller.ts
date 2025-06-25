@@ -8,6 +8,7 @@ import {
 import { PlannerService } from './planner.service';
 import { PlannerConnectionError, PlannerServiceError } from './planner.errors';
 import { TimeConstraintsRequest } from './planner.interfaces';
+import { Public } from 'src/auth/public.decorator';
 
 @Controller('planner')
 export class PlannerController {
@@ -33,11 +34,13 @@ export class PlannerController {
   //   }
   // }
 
+  @Public()
   @Post('time-constraints')
   async getTimeConstraints(
     @Body() timeConstraintsRequest: TimeConstraintsRequest,
   ) {
     try {
+      console.log(timeConstraintsRequest);
       return await this.plannerService.getTimeConstraints(
         timeConstraintsRequest,
       );

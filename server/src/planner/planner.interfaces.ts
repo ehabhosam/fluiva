@@ -40,10 +40,30 @@ export interface PlanResponse {
   total_time: string;
 }
 
+enum TaskDtoPriority {
+  LOW = 'LOW',
+  NORMAL = 'NORMAL',
+  HIGH = 'HIGH',
+}
+
+interface TaskDto {
+  title: string;
+  description: string;
+  requiredTime: number;
+  priority?: TaskDtoPriority;
+  isBreakable: boolean;
+}
+
+interface RoutineDto {
+  title: string;
+  description: string;
+  requiredTime: number;
+}
+
 export interface TimeConstraintsRequest {
-  tasks: Task[];
-  routines: Routine[];
-  blocks_unit: string;
+  tasks: TaskDto[];
+  routines: RoutineDto[];
+  blocksUnit: string;
 }
 
 export interface TimeConstraintsResponse {

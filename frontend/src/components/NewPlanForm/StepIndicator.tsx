@@ -1,13 +1,15 @@
-
+import { CheckCircle } from "lucide-react";
 import React from "react";
-import { CheckCircle, Circle } from "lucide-react";
 
 interface StepIndicatorProps {
   currentStep: number;
   steps: string[];
 }
 
-const StepIndicator: React.FC<StepIndicatorProps> = ({ currentStep, steps }) => {
+const StepIndicator: React.FC<StepIndicatorProps> = ({
+  currentStep,
+  steps,
+}) => {
   return (
     <div className="mb-8">
       <div className="flex justify-between items-center">
@@ -21,8 +23,8 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({ currentStep, steps }) => 
                     index < currentStep
                       ? "bg-plansync-purple-600 text-white"
                       : index === currentStep
-                      ? "bg-plansync-purple-100 border-2 border-plansync-purple-600 text-plansync-purple-600"
-                      : "bg-gray-100 text-gray-500"
+                        ? "bg-plansync-purple-100 border-2 border-plansync-purple-600 text-plansync-purple-600"
+                        : "bg-gray-100 text-gray-500"
                   }`}
               >
                 {index < currentStep ? (

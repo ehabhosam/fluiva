@@ -2,6 +2,7 @@ package grpc_server
 
 import (
 	"context"
+	"fmt"
 	"planner-microservice/planner"
 	pb "planner-microservice/proto"
 
@@ -108,6 +109,9 @@ func (s *PlannerServer) GetTimeConstraints(ctx context.Context, req *pb.TimeCons
 			int(protoRoutine.Todo.RequiredTime),
 		)
 	}
+
+	fmt.Println(tasks)
+	fmt.Println(routines)
 
 	// For leastBlocks and maxBlocks, use periods = 1 as default for leastBlocks, and blocks_unit for maxBlocks
 	leastBlocks := planner.LeastBlocks(tasks, routines, 1)

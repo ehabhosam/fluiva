@@ -1,25 +1,30 @@
-
+import { planApi } from "@/api/plan";
+import {
+  GeneratePlanRequest,
+  PlanType,
+  RoutineInput,
+  TaskInput,
+} from "@/api/types";
+import AuthGuard from "@/components/AuthGuard";
+import { Layout } from "@/components/Layout";
+import PlanDetailsStep from "@/components/NewPlanForm/PlanDetailsStep";
+import RoutinesStep from "@/components/NewPlanForm/RoutinesStep";
+import StepIndicator from "@/components/NewPlanForm/StepIndicator";
+import TasksStep from "@/components/NewPlanForm/TasksStep";
+import TimeConstraintsStep from "@/components/NewPlanForm/TimeConstraintsStep";
+import { Card } from "@/components/ui/card";
+import { toast } from "@/hooks/use-toast";
+import { getUnitsFromPlanType } from "@/lib/utils";
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
-import { planApi } from "@/api/plan";
-import { PlanType, TaskInput, RoutineInput, GeneratePlanRequest } from "@/api/types";
-import { Layout } from "@/components/Layout";
-import AuthGuard from "@/components/AuthGuard";
-import { toast } from "@/hooks/use-toast";
-import { Card } from "@/components/ui/card";
-import StepIndicator from "@/components/NewPlanForm/StepIndicator";
-import PlanDetailsStep from "@/components/NewPlanForm/PlanDetailsStep";
-import TasksStep from "@/components/NewPlanForm/TasksStep";
-import RoutinesStep from "@/components/NewPlanForm/RoutinesStep";
-import TimeConstraintsStep from "@/components/NewPlanForm/TimeConstraintsStep";
 
 const STEPS = ["Plan Details", "Tasks", "Routines", "Time Constraints"];
 
 const NewPlan = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
-  
+
   // Form state
   const [formData, setFormData] = useState<{
     title: string;
@@ -27,8 +32,6 @@ const NewPlan = () => {
     type: PlanType;
     tasks: TaskInput[];
     routines: RoutineInput[];
-    blocksUnit: string;
-    periodUnit: string;
     nBlocks: number;
     nPeriods: number;
   }>({
@@ -37,8 +40,6 @@ const NewPlan = () => {
     type: PlanType.DAILY,
     tasks: [],
     routines: [],
-    blocksUnit: "minutes",
-    periodUnit: "hours",
     nBlocks: 0,
     nPeriods: 0,
   });
@@ -71,7 +72,9 @@ const NewPlan = () => {
     setCurrentStep((prev) => Math.max(prev - 1, 0));
   };
 
-  const handleUpdatePlanDetails = (data: Partial<{ title: string; description: string; type: PlanType }>) => {
+  const handleUpdatePlanDetails = (
+    data: Partial<{ title: string; description: string; type: PlanType }>,
+  ) => {
     setFormData((prev) => ({ ...prev, ...data }));
   };
 
@@ -83,27 +86,25 @@ const NewPlan = () => {
     setFormData((prev) => ({ ...prev, routines }));
   };
 
-  const handleComplete = (data: {
-    blocksUnit: string;
-    periodUnit: string;
-    nBlocks: number;
-    nPeriods: number;
-  }) => {
+  const handleComplete = (data: { nBlocks: number; nPeriods: number }) => {
     setFormData((prev) => ({ ...prev, ...data }));
-    
+
+    // Determine units based on plan type
+    const [buildUnit, periodUnit] = getUnitsFromPlanType(formData.type);
+
     // Generate plan
     const generatePlanRequest: GeneratePlanRequest = {
       title: formData.title,
       description: formData.description,
       type: formData.type,
-      buildUnit: data.blocksUnit,
-      periodUnit: data.periodUnit,
+      buildUnit,
+      periodUnit,
       nBlocks: data.nBlocks,
       nPeriods: data.nPeriods,
       tasks: formData.tasks,
       routines: formData.routines,
     };
-    
+
     generatePlanMutation.mutate(generatePlanRequest);
   };
 
@@ -141,6 +142,7 @@ const NewPlan = () => {
           <TimeConstraintsStep
             tasks={formData.tasks}
             routines={formData.routines}
+            type={formData.type}
             onComplete={handleComplete}
             onBack={handleBack}
           />
@@ -165,10 +167,8 @@ const NewPlan = () => {
 
           <Card className="p-6 bg-white">
             <StepIndicator currentStep={currentStep} steps={STEPS} />
-            
-            <div className="mt-6">
-              {renderStepContent()}
-            </div>
+
+            <div className="mt-6">{renderStepContent()}</div>
           </Card>
 
           {generatePlanMutation.isPending && (
@@ -177,9 +177,12 @@ const NewPlan = () => {
                 <div className="animate-pulse-gentle text-plansync-purple-600 mb-4">
                   <div className="w-12 h-12 border-4 border-plansync-purple-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
                 </div>
-                <h3 className="text-lg font-medium mb-2">Generating your plan</h3>
+                <h3 className="text-lg font-medium mb-2">
+                  Generating your plan
+                </h3>
                 <p className="text-muted-foreground">
-                  This may take a moment as we optimize your tasks and routines...
+                  This may take a moment as we optimize your tasks and
+                  routines...
                 </p>
               </div>
             </div>

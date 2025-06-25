@@ -108,20 +108,52 @@ export class PlannerService implements OnModuleInit {
   ): Promise<TimeConstraintsResponse> {
     this.checkConnection();
 
+    const payload = this.#prepareTimeConstraintsRequest(timeConstraintsRequest);
     return new Promise((resolve, reject) => {
-      this.client.getTimeConstraints(
-        timeConstraintsRequest,
-        (error, response) => {
-          if (error) {
-            this.logger.error(
-              `Error getting time constraints: ${error.message}`,
-            );
-            reject(new PlannerServiceError(error.message));
-            return;
-          }
-          resolve(response);
-        },
-      );
+      this.client.getTimeConstraints(payload, (error, response) => {
+        if (error) {
+          this.logger.error(`Error getting time constraints: ${error.message}`);
+          reject(new PlannerServiceError(error.message));
+          return;
+        }
+        resolve(response);
+      });
     });
+  }
+
+  #prepareTimeConstraintsRequest(
+    timeConstraintsRequest: TimeConstraintsRequest,
+  ) {
+    const mappedTasks = timeConstraintsRequest.tasks.map((task, id) => ({
+      todo: {
+        id: 'task-' + id,
+        title: task.title,
+        description: task.description,
+        required_time: task.requiredTime,
+        type: 'TASK',
+      },
+      priority: task.priority || 'NORMAL',
+      is_breakable: task.isBreakable,
+    }));
+
+    const mappedRoutines = timeConstraintsRequest.routines.map(
+      (routine, id) => {
+        return {
+          todo: {
+            id: 'routine-' + id,
+            title: routine.title,
+            description: routine.description,
+            required_time: routine.requiredTime,
+            type: 'ROUTINE',
+          },
+        };
+      },
+    );
+
+    return {
+      tasks: mappedTasks,
+      routines: mappedRoutines,
+      blocks_unit: timeConstraintsRequest.blocksUnit,
+    };
   }
 }

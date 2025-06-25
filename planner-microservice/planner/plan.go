@@ -81,6 +81,8 @@ func LeastBlocks(tasks []Task, routines []Routine, periods int) int {
 func MaxBlocks(tasks []Task, routines []Routine, blocks_unit string) int {
 	var maxPossibleBlocks int
 
+	fmt.Println("blocks unit that reached max blocks funciton:", blocks_unit)
+
 	switch blocks_unit {
 	case "hour":
 		maxPossibleBlocks = 24

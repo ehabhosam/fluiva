@@ -1,12 +1,11 @@
-
-import { useState } from "react";
 import { RoutineInput } from "@/api/types";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent } from "@/components/ui/card";
-import { Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
+import { useState } from "react";
 
 interface RoutinesStepProps {
   routines: RoutineInput[];
@@ -26,7 +25,7 @@ const RoutinesStep: React.FC<RoutinesStepProps> = ({
     description: "",
     requiredTime: 30,
   });
-  
+
   const [errors, setErrors] = useState<{
     title?: string;
     requiredTime?: string;
@@ -38,17 +37,17 @@ const RoutinesStep: React.FC<RoutinesStepProps> = ({
       title?: string;
       requiredTime?: string;
     } = {};
-    
+
     if (!newRoutine.title.trim()) {
       newErrors.title = "Title is required";
     }
-    
+
     if (newRoutine.requiredTime <= 0) {
       newErrors.requiredTime = "Time must be greater than 0";
     }
-    
+
     setErrors(newErrors);
-    
+
     // If no errors, add routine
     if (Object.keys(newErrors).length === 0) {
       onUpdate([...routines, { ...newRoutine }]);
@@ -74,7 +73,7 @@ const RoutinesStep: React.FC<RoutinesStepProps> = ({
     ) {
       return;
     }
-    
+
     const updatedRoutines = [...routines];
     const targetIndex = direction === "up" ? index - 1 : index + 1;
     [updatedRoutines[index], updatedRoutines[targetIndex]] = [
@@ -99,11 +98,12 @@ const RoutinesStep: React.FC<RoutinesStepProps> = ({
             {routines.length} routine{routines.length !== 1 && "s"}
           </span>
         </div>
-        
+
         {routines.length === 0 ? (
           <div className="border border-dashed rounded-lg p-6 text-center bg-gray-50">
             <p className="text-muted-foreground">
-              No routines added yet. Routines are recurring activities in your plan.
+              No routines added yet. Routines are recurring activities in your
+              plan.
             </p>
           </div>
         ) : (
@@ -185,9 +185,9 @@ const RoutinesStep: React.FC<RoutinesStepProps> = ({
                   <p className="text-sm text-red-500">{errors.title}</p>
                 )}
               </div>
-              
+
               <div className="space-y-2">
-                <Label htmlFor="routine-time">Required Time (minutes)</Label>
+                <Label htmlFor="routine-time">Required Time</Label>
                 <Input
                   id="routine-time"
                   type="number"
@@ -206,9 +206,11 @@ const RoutinesStep: React.FC<RoutinesStepProps> = ({
                 )}
               </div>
             </div>
-            
+
             <div className="space-y-2">
-              <Label htmlFor="routine-description">Description (optional)</Label>
+              <Label htmlFor="routine-description">
+                Description (optional)
+              </Label>
               <Textarea
                 id="routine-description"
                 placeholder="Routine description"
@@ -219,7 +221,7 @@ const RoutinesStep: React.FC<RoutinesStepProps> = ({
                 className="resize-none min-h-[80px]"
               />
             </div>
-            
+
             <Button
               type="button"
               onClick={handleAddRoutine}

@@ -1,14 +1,19 @@
-
-import { useState } from "react";
-import { TaskInput, Priority } from "@/api/types";
+import { Priority, TaskInput } from "@/api/types";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent } from "@/components/ui/card";
-import { Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
+import { useState } from "react";
 
 interface TasksStepProps {
   tasks: TaskInput[];
@@ -42,17 +47,17 @@ const TasksStep: React.FC<TasksStepProps> = ({
       title?: string;
       requiredTime?: string;
     } = {};
-    
+
     if (!newTask.title.trim()) {
       newErrors.title = "Title is required";
     }
-    
+
     if (newTask.requiredTime <= 0) {
       newErrors.requiredTime = "Time must be greater than 0";
     }
-    
+
     setErrors(newErrors);
-    
+
     // If no errors, add task
     if (Object.keys(newErrors).length === 0) {
       onUpdate([...tasks, { ...newTask }]);
@@ -80,7 +85,7 @@ const TasksStep: React.FC<TasksStepProps> = ({
     ) {
       return;
     }
-    
+
     const updatedTasks = [...tasks];
     const targetIndex = direction === "up" ? index - 1 : index + 1;
     [updatedTasks[index], updatedTasks[targetIndex]] = [
@@ -92,7 +97,7 @@ const TasksStep: React.FC<TasksStepProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validate at least one task
     if (tasks.length === 0) {
       setErrors({
@@ -101,7 +106,7 @@ const TasksStep: React.FC<TasksStepProps> = ({
       });
       return;
     }
-    
+
     onNext();
   };
 
@@ -115,7 +120,7 @@ const TasksStep: React.FC<TasksStepProps> = ({
             {tasks.length} task{tasks.length !== 1 && "s"}
           </span>
         </div>
-        
+
         {tasks.length === 0 ? (
           <div className="border border-dashed rounded-lg p-6 text-center bg-gray-50">
             <p className="text-muted-foreground">
@@ -144,8 +149,8 @@ const TasksStep: React.FC<TasksStepProps> = ({
                             task.priority === Priority.HIGH
                               ? "bg-red-100 text-red-800"
                               : task.priority === Priority.NORMAL
-                              ? "bg-blue-100 text-blue-800"
-                              : "bg-green-100 text-green-800"
+                                ? "bg-blue-100 text-blue-800"
+                                : "bg-green-100 text-green-800"
                           }`}
                         >
                           {task.priority?.toLowerCase()}
@@ -198,7 +203,7 @@ const TasksStep: React.FC<TasksStepProps> = ({
             ))}
           </div>
         )}
-        
+
         {errors.tasks && <p className="text-sm text-red-500">{errors.tasks}</p>}
       </div>
 
@@ -223,9 +228,9 @@ const TasksStep: React.FC<TasksStepProps> = ({
                   <p className="text-sm text-red-500">{errors.title}</p>
                 )}
               </div>
-              
+
               <div className="space-y-2">
-                <Label htmlFor="task-time">Required Time (minutes)</Label>
+                <Label htmlFor="task-time">Required Time</Label>
                 <Input
                   id="task-time"
                   type="number"
@@ -244,7 +249,7 @@ const TasksStep: React.FC<TasksStepProps> = ({
                 )}
               </div>
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="task-description">Description (optional)</Label>
               <Textarea
@@ -257,7 +262,7 @@ const TasksStep: React.FC<TasksStepProps> = ({
                 className="resize-none min-h-[80px]"
               />
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="task-priority">Priority</Label>
@@ -280,7 +285,7 @@ const TasksStep: React.FC<TasksStepProps> = ({
                   </SelectContent>
                 </Select>
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <Label htmlFor="task-breakable">Breakable Task</Label>
                 <Switch
@@ -292,7 +297,7 @@ const TasksStep: React.FC<TasksStepProps> = ({
                 />
               </div>
             </div>
-            
+
             <Button
               type="button"
               onClick={handleAddTask}
