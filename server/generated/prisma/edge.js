@@ -184,7 +184,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/home/unixehab/dev/side/plansync/new-server/generated/prisma",
+      "value": "D:\\DEV\\plansync\\server\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -193,12 +193,12 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "debian-openssl-3.0.x",
+        "value": "windows",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/home/unixehab/dev/side/plansync/new-server/prisma/schema.prisma",
+    "sourceFilePath": "D:\\DEV\\plansync\\server\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {

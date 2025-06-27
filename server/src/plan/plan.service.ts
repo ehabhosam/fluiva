@@ -12,6 +12,7 @@ import { UpdatePlanDto } from './dto/update-plan.dto';
 import { ReorderPeriodsDto } from './dto/reorder-periods.dto';
 import { MoveBlockDto } from './dto/move-block.dto';
 import { ReorderBlocksDto } from './dto/reorder-blocks.dto';
+import { getPriorityNumericValue } from './plan.utils';
 
 @Injectable()
 export class PlanService {
@@ -363,9 +364,6 @@ export class PlanService {
         dto.routines,
       );
 
-      console.log('created tasks', createdTasks);
-      console.log('created routines', createdRoutines);
-
       // 3. Prepare request for planner microservice
       const plannerRequest = this.preparePlannerRequest(
         dto,
@@ -497,10 +495,13 @@ export class PlanService {
   private mapPriorityToNumber(priority: Priority | null | undefined): number {
     switch (priority) {
       case Priority.HIGH:
+        console.log('high priority', 3);
         return 3;
       case Priority.NORMAL:
+        console.log('normal priority', 2);
         return 2;
       case Priority.LOW:
+        console.log('low priority', 1);
         return 1;
       default:
         return 2; // Default to normal priority

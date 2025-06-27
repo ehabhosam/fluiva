@@ -290,11 +290,11 @@ func (p *Planner) GenerateTable() [][]TableCell {
 	// split tasks by priority
 	for _, task := range tasksClone {
 		switch task.Priority {
-		case 1:
+		case 3:
 			highPriority = append(highPriority, task)
 		case 2:
 			normalPriority = append(normalPriority, task)
-		case 3:
+		case 1:
 			lowPriority = append(lowPriority, task)
 		}
 	}
