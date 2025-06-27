@@ -46,50 +46,6 @@ const Home = () => {
     enabled: !!user,
   });
 
-  // Mock data for the initial UI
-  const mockPlans: PlanSummary[] = [
-    {
-      id: 1,
-      title: "Work Week Planning",
-      description: "Optimize my workweek tasks and meetings",
-      type: PlanType.WEEKLY,
-      created_at: new Date().toISOString(),
-      _count: {
-        todos: 12,
-        periods: 5,
-      },
-    },
-    {
-      id: 2,
-      title: "Daily Focus Tasks",
-      description: "High priority tasks for today",
-      type: PlanType.DAILY,
-      created_at: new Date().toISOString(),
-      _count: {
-        todos: 6,
-        periods: 3,
-      },
-    },
-    {
-      id: 3,
-      title: "Monthly Project Goals",
-      description: "Long-term project planning and milestones",
-      type: PlanType.MONTHLY,
-      created_at: new Date(Date.now() - 86400000 * 3).toISOString(),
-      _count: {
-        todos: 20,
-        periods: 8,
-      },
-    },
-  ];
-
-  const [displayedPlans, setDisplayedPlans] = useState<PlanSummary[]>([]);
-
-  useEffect(() => {
-    // Use real data when available, otherwise use mock data
-    setDisplayedPlans(plans || mockPlans);
-  }, [plans]);
-
   console.log(error);
 
   return (
@@ -135,7 +91,7 @@ const Home = () => {
                 Try Again
               </Button>
             </div>
-          ) : displayedPlans.length === 0 ? (
+          ) : plans.length === 0 ? (
             <div className="flex flex-col items-center justify-center p-12 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50">
               <div className="w-16 h-16 mb-4 rounded-full gradient-bg flex items-center justify-center">
                 <PlusCircle className="w-8 h-8 text-white" />
@@ -151,7 +107,7 @@ const Home = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {displayedPlans.map((plan) => (
+              {plans.map((plan) => (
                 <Link key={plan.id} to={`/plans/${plan.id}`}>
                   <Card className="h-full card-hover overflow-hidden">
                     <div

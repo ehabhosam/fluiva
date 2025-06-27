@@ -12,12 +12,13 @@
 - [x] write the actual NestJS REST API:
   - [x] plan API endpoints
   - [x] user authentication API
-- [ ] resolve current frontend bugs:
+- [x] resolve current frontend bugs:
   - [x] time units should be specified by the plan type
   - [x] changing the periods should update the blocks and vice versa (one class instance per render/ or a proxy)
-  - [ ] test the drag and drop functionalities to make sure they work as expected
-  - [ ] proirity not working (debug the issue and fix)
-- implement the completed functionality integration
+  - [x] test the drag and drop functionalities to make sure they work as expected
+  - [x] proirity not working (debug the issue and fix)
+- [ ] implement Reordering functionality integration
+- [ ] implement the completed functionality integration
 - [ ] new design system
   - [ ] check the colors system
   - [ ] ui components special styling

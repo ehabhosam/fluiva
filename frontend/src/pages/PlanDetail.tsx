@@ -163,180 +163,6 @@ const PlanDetail = () => {
     });
   };
 
-  // For the demo, let's create a mock plan
-  const mockPlan: PlanDetailType = {
-    id: 1,
-    title: "Weekly Work Schedule",
-    description: "Organize my work tasks and routines for better productivity",
-    type: "WEEKLY" as any,
-    user_id: "user123",
-    created_at: new Date().toISOString(),
-    deleted_at: null,
-    todos: [
-      {
-        id: 1,
-        title: "Project Meeting",
-        description: "Team sync-up for the new feature",
-        required_time: 60,
-        priority: "HIGH" as any,
-        is_breakable: false,
-        type: "TASK" as any,
-        plan_id: 1,
-      },
-      {
-        id: 2,
-        title: "Code Review",
-        description: "Review pull requests",
-        required_time: 45,
-        priority: "NORMAL" as any,
-        is_breakable: true,
-        type: "TASK" as any,
-        plan_id: 1,
-      },
-      {
-        id: 3,
-        title: "Email Check",
-        description: "Process inbox and respond to important messages",
-        required_time: 30,
-        priority: "LOW" as any,
-        is_breakable: true,
-        type: "ROUTINE" as any,
-        plan_id: 1,
-      },
-      {
-        id: 4,
-        title: "Documentation",
-        description: "Update API documentation",
-        required_time: 90,
-        priority: "NORMAL" as any,
-        is_breakable: true,
-        type: "TASK" as any,
-        plan_id: 1,
-      },
-      {
-        id: 5,
-        title: "Exercise",
-        description: "Short workout break",
-        required_time: 20,
-        priority: null,
-        is_breakable: false,
-        type: "ROUTINE" as any,
-        plan_id: 1,
-      },
-    ],
-    periods: [
-      {
-        id: 1,
-        index: 0,
-        plan_id: 1,
-        blocks: [
-          {
-            id: 1,
-            index: 0,
-            done_at: new Date().toISOString(),
-            period_id: 1,
-            todo_id: 1,
-            todo: {
-              id: 1,
-              title: "Project Meeting",
-              description: "Team sync-up for the new feature",
-              required_time: 60,
-              priority: "HIGH" as any,
-              is_breakable: false,
-              type: "TASK" as any,
-              plan_id: 1,
-            },
-          },
-          {
-            id: 2,
-            index: 1,
-            done_at: null,
-            period_id: 1,
-            todo_id: 3,
-            todo: {
-              id: 3,
-              title: "Email Check",
-              description: "Process inbox and respond to important messages",
-              required_time: 30,
-              priority: "LOW" as any,
-              is_breakable: true,
-              type: "ROUTINE" as any,
-              plan_id: 1,
-            },
-          },
-        ],
-      },
-      {
-        id: 2,
-        index: 1,
-        plan_id: 1,
-        blocks: [
-          {
-            id: 3,
-            index: 0,
-            done_at: null,
-            period_id: 2,
-            todo_id: 2,
-            todo: {
-              id: 2,
-              title: "Code Review",
-              description: "Review pull requests",
-              required_time: 45,
-              priority: "NORMAL" as any,
-              is_breakable: true,
-              type: "TASK" as any,
-              plan_id: 1,
-            },
-          },
-          {
-            id: 4,
-            index: 1,
-            done_at: null,
-            period_id: 2,
-            todo_id: 5,
-            todo: {
-              id: 5,
-              title: "Exercise",
-              description: "Short workout break",
-              required_time: 20,
-              priority: null,
-              is_breakable: false,
-              type: "ROUTINE" as any,
-              plan_id: 1,
-            },
-          },
-        ],
-      },
-      {
-        id: 3,
-        index: 2,
-        plan_id: 1,
-        blocks: [
-          {
-            id: 5,
-            index: 0,
-            done_at: null,
-            period_id: 3,
-            todo_id: 4,
-            todo: {
-              id: 4,
-              title: "Documentation",
-              description: "Update API documentation",
-              required_time: 90,
-              priority: "NORMAL" as any,
-              is_breakable: true,
-              type: "TASK" as any,
-              plan_id: 1,
-            },
-          },
-        ],
-      },
-    ],
-  };
-
-  // Use the fetched plan or fall back to the mock plan for demonstration
-  const displayPlan: PlanDetailType = plan || mockPlan;
-
   return (
     <AuthGuard>
       <Layout>
@@ -352,26 +178,26 @@ const PlanDetail = () => {
                 <span>Back to plans</span>
               </Link>
               <h1 className="text-2xl font-bold text-plansync-purple-900">
-                {isLoading ? "Loading plan..." : displayPlan.title}
+                {isLoading ? "Loading plan..." : plan.title}
               </h1>
               <div className="flex items-center gap-4 mt-1">
                 <div className="flex items-center gap-1 text-sm text-muted-foreground">
                   <Calendar className="w-4 h-4" />
                   <span>
                     {format(
-                      parseISO(displayPlan.created_at),
+                      parseISO(plan.created_at),
                       "MMM d, yyyy"
                     )}
                   </span>
                 </div>
                 <div className="flex items-center gap-1 text-sm text-muted-foreground">
                   <Clock className="w-4 h-4" />
-                  <span>{displayPlan.type.toLowerCase()} plan</span>
+                  <span>{plan.type.toLowerCase()} plan</span>
                 </div>
               </div>
-              {displayPlan.description && (
+              {plan.description && (
                 <p className="mt-3 text-muted-foreground max-w-2xl">
-                  {displayPlan.description}
+                  {plan.description}
                 </p>
               )}
             </div>
@@ -384,7 +210,7 @@ const PlanDetail = () => {
           {/* Plan Chart */}
           <div className="mb-8">
             <PlanChart
-              plan={displayPlan}
+              plan={plan}
               onPeriodClick={(periodId) => setActivePeriod(periodId)}
               activePeriod={activePeriod}
             />
@@ -447,7 +273,7 @@ const PlanDetail = () => {
                         ref={provided.innerRef}
                         className="space-y-4"
                       >
-                        {displayPlan.periods
+                        {plan.periods
                           ?.filter(
                             (period) =>
                               activePeriod === null ||
