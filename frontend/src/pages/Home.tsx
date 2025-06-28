@@ -2,6 +2,7 @@ import { planApi } from "@/api/plan";
 import { PlanSummary, PlanType } from "@/api/types";
 import AuthGuard from "@/components/AuthGuard";
 import { Layout } from "@/components/Layout";
+import Loading from "@/components/Loading";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/use-auth";
@@ -47,6 +48,16 @@ const Home = () => {
   });
 
   console.log(error);
+
+  if (isLoading) {
+    return <Layout>
+      <Loading />
+    </Layout>
+  }
+
+  if (!plans) {
+    return "something bad occurred fetching data. Please report the developer."
+  }
 
   return (
     <AuthGuard>

@@ -10,6 +10,7 @@ interface DraggableBlockProps {
   block: Block;
   index: number;
   onMarkDone: (blockId: number, isDone: boolean) => void;
+  blockUnit: string; 
 }
 
 const BlockPriorityColor: Record<string, string> = {
@@ -27,6 +28,7 @@ const DraggableBlock: React.FC<DraggableBlockProps> = ({
   block,
   index,
   onMarkDone,
+  blockUnit
 }) => {
   const [isDone, setIsDone] = useState<boolean>(getDoneStatus(block));
   const todo = block.todo as Todo;
@@ -78,7 +80,7 @@ const DraggableBlock: React.FC<DraggableBlockProps> = ({
                 )}
                 <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
                   <Clock className="w-3 h-3" />
-                  <span>{todo.required_time} min</span>
+                  <span>{todo.required_time} {blockUnit + (todo.required_time > 1? "s": "")}</span>
                 </div>
               </div>
               <button

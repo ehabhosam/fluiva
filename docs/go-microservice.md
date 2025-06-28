@@ -111,7 +111,7 @@ message PlanResponse {
 ```go
 client := pb.NewPlannerServiceClient(conn)
 res, err := client.GeneratePlan(context.Background(), &pb.PlanRequest{
-    BuildUnit:  "30min",
+    BuildUnit:  "hour",
     PeriodUnit: "day",
     Tasks: []*pb.Task{
         {
@@ -119,7 +119,7 @@ res, err := client.GeneratePlan(context.Background(), &pb.PlanRequest{
                 Id:           "1",
                 Title:        "Complete assignment",
                 Description:  "Finish math homework",
-                RequiredTime: 120, // in minutes
+                RequiredTime: 12,
                 Type:         "task",
             },
             Priority:    3, // high priority
@@ -132,7 +132,7 @@ res, err := client.GeneratePlan(context.Background(), &pb.PlanRequest{
                 Id:           "2",
                 Title:        "Morning exercise",
                 Description:  "Daily workout",
-                RequiredTime: 30, // in minutes
+                RequiredTime: 3,
                 Type:         "routine",
             },
         },

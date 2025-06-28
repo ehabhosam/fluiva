@@ -4,7 +4,7 @@ import { useParams, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { planApi } from "@/api/plan";
-import { PlanDetail as PlanDetailType, PeriodReorder, BlockReorder } from "@/api/types";
+import { PlanDetail as PlanDetailType, PeriodReorder, BlockReorder, PlanType } from "@/api/types";
 import { Layout } from "@/components/Layout";
 import AuthGuard from "@/components/AuthGuard";
 import { toast } from "@/hooks/use-toast";
@@ -16,6 +16,8 @@ import PlanChart from "@/components/PlanDetail/PlanChart";
 import { ArrowLeft, Calendar, Clock, Edit } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { cn } from "@/lib/utils";
+import Loading from "@/components/Loading";
+import PeriodsTabs from "@/components/PlanDetail/PeriodsTabs";
 
 const PlanDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -162,6 +164,33 @@ const PlanDetail = () => {
       description: "Block status has been updated",
     });
   };
+  
+  if (isLoading) {
+    return <Layout>
+      <Loading />
+    </Layout>
+  }
+
+
+  if (!plan) {
+    return <Layout>
+      <div className="space-y-6">
+        <h3>Plan Not Found.</h3>
+      </div>
+    </Layout>
+  }
+
+  let periodUnit, blockUnit; 
+  if (plan.type === PlanType.DAILY) {
+    periodUnit = "day";
+    blockUnit = "hour";
+  } else if (plan.type === PlanType.WEEKLY) {
+    periodUnit = "week";
+    blockUnit = "day";
+  } else {
+    periodUnit = "month";
+    blockUnit = "week";
+  }
 
   return (
     <AuthGuard>
@@ -207,12 +236,13 @@ const PlanDetail = () => {
             </Button>
           </div>
 
-          {/* Plan Chart */}
+          {/* Periods Tabs */}
           <div className="mb-8">
-            <PlanChart
+            <PeriodsTabs 
+              activePeriod={activePeriod}
               plan={plan}
               onPeriodClick={(periodId) => setActivePeriod(periodId)}
-              activePeriod={activePeriod}
+              periodUnit={periodUnit}
             />
           </div>
 
@@ -221,10 +251,10 @@ const PlanDetail = () => {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle>Periods & Blocks</CardTitle>
-                  <CardDescription>
-                    Drag and drop to reorder periods and blocks
-                  </CardDescription>
+                  <CardTitle className="capitalize">Plan {periodUnit}s Content</CardTitle>
+                  <CardDescription className="mt-2">
+                    Drag and drop to reorder {periodUnit}s and {blockUnit}s
+                  </CardDescription>                
                 </div>
                 {activePeriod && (
                   <Button
@@ -232,11 +262,11 @@ const PlanDetail = () => {
                     size="sm"
                     onClick={() => setActivePeriod(null)}
                     className={cn(
-                      "text-xs",
+                      "text-xs capitalize",
                       activePeriod === null && "hidden"
                     )}
                   >
-                    View All Periods
+                    View All {periodUnit}s
                   </Button>
                 )}
               </div>
@@ -285,6 +315,8 @@ const PlanDetail = () => {
                               period={period}
                               index={index}
                               onMarkBlockDone={handleMarkBlockDone}
+                              blockUnit={blockUnit}
+                              periodUnit={periodUnit}
                             />
                           ))}
                         {provided.placeholder}

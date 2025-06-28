@@ -246,7 +246,6 @@ Creates a new plan with todos and automatically generates periods and blocks bas
     "todos": [...],
     "periods": [...]
   },
-  "totalTime": "14 hours 10 minutes"
 }
 ```
 
@@ -487,7 +486,6 @@ Error responses include a message describing the error:
 2. Handle errors gracefully by checking status codes
 3. When moving or reordering items, ensure IDs are valid and belong to the authenticated user
 4. For plan generation, ensure all required fields are provided
-5. All time values for todos are in minutes
 
 ## User API
 
