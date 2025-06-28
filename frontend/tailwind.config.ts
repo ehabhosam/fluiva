@@ -19,6 +19,9 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				"aclonica": "Aclonica"
+			},
 			gridTemplateColumns: {
 				'auto-fit': 'repeat(auto-fit, minmax(140px, 1fr))',
 			},

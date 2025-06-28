@@ -71,7 +71,7 @@ const PeriodsTabs: React.FC<PeriodsTabsProps> = ({
 
     return (
         <div className="overflow-x-auto">
-            <div className="flex gap-2 min-w-max md:min-w-0 md:grid md:grid-cols-auto-fit md:gap-3">
+            <div className="flex gap-2 min-w-max md:min-w-0 md:grid md:grid-cols-auto-fit md:gap-3 font-aclonica">
                 {periodsData.map((period) => (
                     <button
                         key={period.id}

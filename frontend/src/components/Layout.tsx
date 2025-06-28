@@ -35,9 +35,15 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div className="container flex items-center justify-between h-16 px-4 mx-auto">
           <div className="flex items-center gap-2">
             <Link to="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-md gradient-bg flex items-center justify-center">
-                <span className="text-white font-bold">PS</span>
-              </div>
+              <span className="w-7 h-7">
+                <img 
+                  src="/assets/logo.png"
+                  width='100%'
+                  height='100%'
+                  className="scale-150"
+                  alt="PlanSync Logo"
+                />
+              </span>
               <h1 className="text-xl font-bold text-plansync-purple-900">
                 PlanSync
               </h1>

@@ -65,7 +65,7 @@ const Home = () => {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-plansync-purple-900">
+              <h1 className="text-2xl font-bold text-plansync-purple-900 font-aclonica">
                 My Plans
               </h1>
               <p className="text-muted-foreground">
@@ -73,7 +73,7 @@ const Home = () => {
               </p>
             </div>
             <Link to="/plans/new">
-              <Button className="gradient-bg">
+              <Button className="gradient-bg font-aclonica">
                 <PlusCircle className="w-4 h-4 mr-2" />
                 Create Plan
               </Button>
@@ -133,7 +133,7 @@ const Home = () => {
                     <CardHeader className="flex flex-row items-center gap-3">
                       <PlanTypeIcon type={plan.type} />
                       <div>
-                        <CardTitle className="text-lg">{plan.title}</CardTitle>
+                        <CardTitle className="text-lg font-aclonica">{plan.title}</CardTitle>
                         <div className="text-sm text-muted-foreground">
                           {plan.type.toLowerCase()} plan
                         </div>

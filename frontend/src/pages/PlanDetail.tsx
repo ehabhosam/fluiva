@@ -206,7 +206,7 @@ const PlanDetail = () => {
                 <ArrowLeft className="w-4 h-4 mr-1" />
                 <span>Back to plans</span>
               </Link>
-              <h1 className="text-2xl font-bold text-plansync-purple-900">
+              <h1 className="text-2xl font-bold text-plansync-purple-900 font-aclonica capitalize">
                 {isLoading ? "Loading plan..." : plan.title}
               </h1>
               <div className="flex items-center gap-4 mt-1">
@@ -251,7 +251,7 @@ const PlanDetail = () => {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="capitalize">Plan {periodUnit}s Content</CardTitle>
+                  <CardTitle className="capitalize font-aclonica">Plan {periodUnit}s Content</CardTitle>
                   <CardDescription className="mt-2">
                     Drag and drop to reorder {periodUnit}s and {blockUnit}s
                   </CardDescription>                
