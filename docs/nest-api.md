@@ -480,6 +480,47 @@ Error responses include a message describing the error:
 }
 ```
 
+### Complete Block
+
+Marks a block as completed or incomplete.
+
+**Endpoint**: `POST /plan/complete-block`
+
+**Request Body**:
+
+```json
+{
+  "blockId": 1,
+  "completed": true
+}
+```
+
+The `completed` field is optional and defaults to `true`. Setting it to `false` will mark the block as incomplete.
+
+**Response**:
+
+```json
+{
+  "id": 1,
+  "index": 0,
+  "done_at": "2023-05-23T15:45:30.000Z",
+  "period_id": 1,
+  "todo_id": 5,
+  "todo": {
+    "id": 5,
+    "title": "Math Assignment",
+    "description": "Complete calculus problems 1-20",
+    "required_time": 120,
+    "priority": "HIGH",
+    "is_breakable": true,
+    "type": "TASK",
+    "plan_id": 1
+  }
+}
+```
+
+When marking as incomplete, the `done_at` field will be `null`.
+
 ## Tips for Consumption
 
 1. Always include the authentication token in requests

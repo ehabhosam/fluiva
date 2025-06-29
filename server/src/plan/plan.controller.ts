@@ -15,6 +15,7 @@ import { UpdatePlanDto } from './dto/update-plan.dto';
 import { ReorderPeriodsDto } from './dto/reorder-periods.dto';
 import { MoveBlockDto } from './dto/move-block.dto';
 import { ReorderBlocksDto } from './dto/reorder-blocks.dto';
+import { CompleteBlockDto } from './dto/complete-block.dto';
 import {
   PlannerConnectionError,
   PlannerServiceError,
@@ -88,28 +89,6 @@ export class PlanController {
     }
   }
 
-  @Post(':id')
-  async updatePlan(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updatePlanDto: UpdatePlanDto,
-    @Request() req,
-  ) {
-    try {
-      // Assuming you have a userId from authentication
-      const userId = req.user?.sub || req.user?.id;
-      return await this.planService.updatePlan(id, userId, updatePlanDto);
-    } catch (error) {
-      if (error.status === 404) {
-        throw error;
-      }
-      console.error(`Error updating plan with ID ${id}:`, error);
-      throw new HttpException(
-        'Failed to update plan',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
   @Post('reorder-periods')
   async reorderPeriods(
     @Body() reorderPeriodsDto: ReorderPeriodsDto,
@@ -149,6 +128,27 @@ export class PlanController {
     }
   }
 
+  @Post('complete-block')
+  async completeBlock(
+    @Body() completeBlockDto: CompleteBlockDto,
+    @Request() req,
+  ) {
+    try {
+      // Assuming you have a userId from authentication
+      const userId = req.user?.sub || req.user?.id;
+      return await this.planService.completeBlock(userId, completeBlockDto);
+    } catch (error) {
+      if (error.status === 404 || error.status === 400) {
+        throw error;
+      }
+      console.error('Error completing block:', error);
+      throw new HttpException(
+        'Failed to update block completion status',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   @Post('reorder-blocks')
   async reorderBlocks(
     @Body() reorderBlocksDto: ReorderBlocksDto,
@@ -165,6 +165,28 @@ export class PlanController {
       console.error('Error reordering blocks:', error);
       throw new HttpException(
         'Failed to reorder blocks',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Post(':id')
+  async updatePlan(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updatePlanDto: UpdatePlanDto,
+    @Request() req,
+  ) {
+    try {
+      // Assuming you have a userId from authentication
+      const userId = req.user?.sub || req.user?.id;
+      return await this.planService.updatePlan(id, userId, updatePlanDto);
+    } catch (error) {
+      if (error.status === 404) {
+        throw error;
+      }
+      console.error(`Error updating plan with ID ${id}:`, error);
+      throw new HttpException(
+        'Failed to update plan',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

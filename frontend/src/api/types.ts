@@ -145,6 +145,11 @@ export interface ReorderBlocksRequest {
   blocks: BlockReorder[];
 }
 
+export interface CompleteBlockRequest {
+  blockId: number;
+  completed?: boolean;
+}
+
 // Error Response
 export interface ApiError {
   statusCode: number;

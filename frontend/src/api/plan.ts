@@ -8,6 +8,7 @@ import {
   ReorderPeriodsRequest,
   MoveBlockRequest,
   ReorderBlocksRequest,
+  CompleteBlockRequest,
   Period,
   Block,
 } from "./types";
@@ -69,6 +70,14 @@ export const planApi = {
    */
   reorderBlocks: (data: ReorderBlocksRequest): Promise<Block[]> => {
     return api.post("/plan/reorder-blocks", data);
+  },
+
+  /**
+   * Mark a block as completed or incomplete
+   * @param data - Block completion information
+   */
+  completeBlock: (data: CompleteBlockRequest): Promise<Block> => {
+    return api.post("/plan/complete-block", data);
   },
 };
 

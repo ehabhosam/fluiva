@@ -12,7 +12,7 @@ import { UpdatePlanDto } from './dto/update-plan.dto';
 import { ReorderPeriodsDto } from './dto/reorder-periods.dto';
 import { MoveBlockDto } from './dto/move-block.dto';
 import { ReorderBlocksDto } from './dto/reorder-blocks.dto';
-import { getPriorityNumericValue } from './plan.utils';
+import { CompleteBlockDto } from './dto/complete-block.dto';
 
 @Injectable()
 export class PlanService {
@@ -506,6 +506,49 @@ export class PlanService {
       default:
         return 2; // Default to normal priority
     }
+  }
+
+  async completeBlock(userId: string, dto: CompleteBlockDto) {
+    return this.prisma.$transaction(async (tx) => {
+      // Get the block and validate it exists
+      const block = await tx.block.findUnique({
+        where: { id: dto.blockId },
+        include: {
+          period: {
+            include: {
+              plan: {
+                select: {
+                  user_id: true,
+                },
+              },
+            },
+          },
+          todo: true,
+        },
+      });
+
+      if (!block) {
+        throw new NotFoundException(`Block with ID ${dto.blockId} not found`);
+      }
+
+      // Check user owns the plan
+      if (block.period.plan.user_id !== userId) {
+        throw new NotFoundException(`Block with ID ${dto.blockId} not found`);
+      }
+
+      // Update the block's completion status
+      const updatedBlock = await tx.block.update({
+        where: { id: dto.blockId },
+        data: {
+          done_at: dto.completed ? new Date() : null,
+        },
+        include: {
+          todo: true,
+        },
+      });
+
+      return updatedBlock;
+    });
   }
 
   private async createPeriodsAndBlocks(

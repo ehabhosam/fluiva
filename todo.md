@@ -18,10 +18,10 @@
   - [x] test the drag and drop functionalities to make sure they work as expected
   - [x] proirity not working (debug the issue and fix)
 - [ ] implement Reordering functionality integration
-- [ ] implement the completed functionality integration
+- [x] implement the completed functionality integration
 - [ ] new design system
   - [ ] check the colors system
   - [ ] ui components special styling
   - [x] custom fonts
 - [ ] integrate localization to the frontend (replace hardcoded content with json files)
-- [ ] look for a vps service to host the system and deploy an mvp version to release it for testing feedback
+- [ ] look for a vps service to host the system and deploy an mvp version to release it for testing feedback (koyeb, glitch, render)
