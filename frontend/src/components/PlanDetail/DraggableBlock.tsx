@@ -2,7 +2,7 @@ import { Block, Todo } from "@/api/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { useCompleteBlock } from "@/hooks/use-complete-block";
 import { cn } from "@/lib/utils";
-import { Check, Clock, Loader2 } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
 
@@ -17,7 +17,7 @@ const BlockPriorityColor: Record<string, string> = {
   HIGH: "border-red-500 bg-red-50",
   NORMAL: "border-blue-500 bg-blue-50",
   LOW: "border-green-500 bg-green-50",
-  NULL: "border-gray-300 bg-gray-50",
+  NULL: "border-gray-300 bg-gray-50", // routine
 };
 
 export const getDoneStatus = (block: Block): boolean => {
@@ -95,13 +95,13 @@ const DraggableBlock: React.FC<DraggableBlockProps> = ({
                     {todo.description}
                   </p>
                 )}
-                <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
+                {/* <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
                   <Clock className="w-3 h-3" />
                   <span>
                     {todo.required_time}{" "}
                     {blockUnit + (todo.required_time > 1 ? "s" : "")}
                   </span>
-                </div>
+                </div> */}
               </div>
               <button
                 onClick={handleToggleDone}
