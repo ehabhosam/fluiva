@@ -22,6 +22,6 @@
 - [ ] new design system
   - [ ] check the colors system
   - [ ] ui components special styling
-  - [ ] custom fonts
+  - [x] custom fonts
 - [ ] integrate localization to the frontend (replace hardcoded content with json files)
 - [ ] look for a vps service to host the system and deploy an mvp version to release it for testing feedback
