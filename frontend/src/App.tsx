@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import NewPlan from "./pages/NewPlan";
 import NotFound from "./pages/NotFound";
+import OverwhelmOrganizer from "./pages/OverwhelmOrganizer";
 import PlanDetail from "./pages/PlanDetail";
 
 const queryClient = new QueryClient({
@@ -31,6 +32,10 @@ const App = () => (
             <Route path="/" element={<Home />} />
             <Route path="/plans/new" element={<NewPlan />} />
             <Route path="/plans/:id" element={<PlanDetail />} />
+            <Route
+              path="/overwhelm-organizer"
+              element={<OverwhelmOrganizer />}
+            />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

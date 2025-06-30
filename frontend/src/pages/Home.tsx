@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/use-auth";
 import { useQuery } from "@tanstack/react-query";
 import { format, parseISO } from "date-fns";
-import { Calendar, Clock, PlusCircle } from "lucide-react";
+import { Calendar, Clock, LayoutDashboard, PlusCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const PlanTypeIcon = ({ type }: { type: PlanType }) => {
@@ -73,12 +73,23 @@ const Home = () => {
                 View and manage all your productivity plans
               </p>
             </div>
-            <Link to="/plans/new">
-              <Button className="gradient-bg font-lilita-one">
-                <PlusCircle className="w-4 h-4 mr-2" />
-                Create Plan
-              </Button>
-            </Link>
+            <div className="flex gap-2">
+              <Link to="/overwhelm-organizer">
+                <Button
+                  variant="outline"
+                  className="border-plansync-purple-600 text-plansync-purple-800 font-lilita-one"
+                >
+                  <LayoutDashboard className="w-4 h-4 mr-2" />
+                  Overwhelm Organizer
+                </Button>
+              </Link>
+              <Link to="/plans/new">
+                <Button className="gradient-bg font-lilita-one">
+                  <PlusCircle className="w-4 h-4 mr-2" />
+                  Create Plan
+                </Button>
+              </Link>
+            </div>
           </div>
 
           {isLoading ? (
