@@ -27,7 +27,7 @@ const PeriodsTabs: React.FC<PeriodsTabsProps> = ({
     if (!plan.periods) return [];
 
     return plan.periods.map((period) => {
-      const totalTime = calculatePeriodTime(period);
+      const totalTime = period.blocks?.length || 0;
       const completedTime = calculateCompletedTime(period);
       const completionPercentage =
         totalTime > 0 ? Math.round((completedTime / totalTime) * 100) : 0;
@@ -43,22 +43,12 @@ const PeriodsTabs: React.FC<PeriodsTabsProps> = ({
     });
   }, [plan]);
 
-  function calculatePeriodTime(period: Period): number {
-    if (!period.blocks) return 0;
-
-    return period.blocks.reduce((total, block) => {
-      const todo = block.todo;
-      return total + (todo ? todo.required_time : 0);
-    }, 0);
-  }
-
   function calculateCompletedTime(period: Period): number {
     if (!period.blocks) return 0;
 
     return period.blocks.reduce((total, block) => {
       if (block.done_at === null) return total;
-      const todo = block.todo;
-      return total + (todo ? todo.required_time : 0);
+      return total + 1;
     }, 0);
   }
 
@@ -74,8 +64,8 @@ const PeriodsTabs: React.FC<PeriodsTabsProps> = ({
             key={period.id}
             onClick={() => handlePeriodClick(period.id)}
             className={`
-                    flex flex-col items-center p-4 rounded-lg border transition-all duration-200
-                    min-w-[120px] md:min-w-0
+                    relative flex flex-col items-center justify-center p-4 rounded-lg border transition-all duration-200
+                    min-w-[120px] md:min-w-0 overflow-hidden
                     ${
                       activePeriod === period.id
                         ? "border-primary bg-primary/5 shadow-md !font-bold"
@@ -83,8 +73,28 @@ const PeriodsTabs: React.FC<PeriodsTabsProps> = ({
                     }
                 `}
           >
-            <span className="font-medium text-sm mb-1 capitalize">
+            <div
+              className="absolute top-0 left-0 bg-purple-200/50 transition-all duration-300 z-0"
+              style={{
+                width: `${period.completionPercentage}%`,
+                height: "100%",
+              }}
+            />
+            <span
+              className={`font-medium capitalize relative z-10 transition-all duration-300 text-lg ${
+                activePeriod === period.id ? "translate-y-0" : "translate-y-2"
+              }`}
+            >
               {period.name}
+            </span>
+            <span
+              className={`text-xs text-muted-foreground relative z-10 transition-opacity duration-300 ${
+                activePeriod === period.id
+                  ? "opacity-100"
+                  : "opacity-0 absolute"
+              }`}
+            >
+              {period.completionPercentage}% complete
             </span>
           </button>
         ))}
