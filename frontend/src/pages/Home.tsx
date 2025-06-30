@@ -1,5 +1,5 @@
 import { planApi } from "@/api/plan";
-import { PlanSummary, PlanType } from "@/api/types";
+import { PlanType } from "@/api/types";
 import AuthGuard from "@/components/AuthGuard";
 import { Layout } from "@/components/Layout";
 import Loading from "@/components/Loading";
@@ -9,7 +9,6 @@ import { useAuth } from "@/hooks/use-auth";
 import { useQuery } from "@tanstack/react-query";
 import { format, parseISO } from "date-fns";
 import { Calendar, Clock, PlusCircle } from "lucide-react";
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const PlanTypeIcon = ({ type }: { type: PlanType }) => {
@@ -50,13 +49,15 @@ const Home = () => {
   console.log(error);
 
   if (isLoading) {
-    return <Layout>
-      <Loading />
-    </Layout>
+    return (
+      <Layout>
+        <Loading />
+      </Layout>
+    );
   }
 
   if (!plans) {
-    return "something bad occurred fetching data. Please report the developer."
+    return "something bad occurred fetching data. Please report the developer.";
   }
 
   return (
@@ -65,7 +66,7 @@ const Home = () => {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-plansync-purple-900 font-aclonica">
+              <h1 className="text-2xl font-bold text-plansync-purple-900 font-lilita-one">
                 My Plans
               </h1>
               <p className="text-muted-foreground">
@@ -73,7 +74,7 @@ const Home = () => {
               </p>
             </div>
             <Link to="/plans/new">
-              <Button className="gradient-bg font-aclonica">
+              <Button className="gradient-bg font-lilita-one">
                 <PlusCircle className="w-4 h-4 mr-2" />
                 Create Plan
               </Button>
@@ -133,7 +134,9 @@ const Home = () => {
                     <CardHeader className="flex flex-row items-center gap-3">
                       <PlanTypeIcon type={plan.type} />
                       <div>
-                        <CardTitle className="text-lg font-aclonica">{plan.title}</CardTitle>
+                        <CardTitle className="text-lg font-lilita-one">
+                          {plan.title}
+                        </CardTitle>
                         <div className="text-sm text-muted-foreground">
                           {plan.type.toLowerCase()} plan
                         </div>

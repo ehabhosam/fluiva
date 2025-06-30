@@ -1,23 +1,26 @@
-
-import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { planApi } from "@/api/plan";
-import { PlanDetail as PlanDetailType, PeriodReorder, BlockReorder, PlanType } from "@/api/types";
-import { Layout } from "@/components/Layout";
+import { BlockReorder, PeriodReorder, PlanType } from "@/api/types";
 import AuthGuard from "@/components/AuthGuard";
-import { toast } from "@/hooks/use-toast";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Droppable } from "react-beautiful-dnd";
-import DroppablePeriod from "@/components/PlanDetail/DroppablePeriod";
-import PlanChart from "@/components/PlanDetail/PlanChart";
-import { ArrowLeft, Calendar, Clock, Edit } from "lucide-react";
-import { format, parseISO } from "date-fns";
-import { cn } from "@/lib/utils";
+import { Layout } from "@/components/Layout";
 import Loading from "@/components/Loading";
+import DroppablePeriod from "@/components/PlanDetail/DroppablePeriod";
 import PeriodsTabs from "@/components/PlanDetail/PeriodsTabs";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { toast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { format, parseISO } from "date-fns";
+import { ArrowLeft, Calendar, Clock, Edit } from "lucide-react";
+import { useEffect, useState } from "react";
+import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
+import { Link, useParams } from "react-router-dom";
 
 const PlanDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -128,7 +131,7 @@ const PlanDetail = () => {
       const blockId = Number(draggableId.replace("block-", ""));
       const sourcePeriodId = Number(source.droppableId.replace("period-", ""));
       const destinationPeriodId = Number(
-        destination.droppableId.replace("period-", "")
+        destination.droppableId.replace("period-", ""),
       );
 
       if (sourcePeriodId === destinationPeriodId) {
@@ -164,23 +167,26 @@ const PlanDetail = () => {
       description: "Block status has been updated",
     });
   };
-  
-  if (isLoading) {
-    return <Layout>
-      <Loading />
-    </Layout>
-  }
 
+  if (isLoading) {
+    return (
+      <Layout>
+        <Loading />
+      </Layout>
+    );
+  }
 
   if (!plan) {
-    return <Layout>
-      <div className="space-y-6">
-        <h3>Plan Not Found.</h3>
-      </div>
-    </Layout>
+    return (
+      <Layout>
+        <div className="space-y-6">
+          <h3>Plan Not Found.</h3>
+        </div>
+      </Layout>
+    );
   }
 
-  let periodUnit, blockUnit; 
+  let periodUnit, blockUnit;
   if (plan.type === PlanType.DAILY) {
     periodUnit = "day";
     blockUnit = "hour";
@@ -206,17 +212,14 @@ const PlanDetail = () => {
                 <ArrowLeft className="w-4 h-4 mr-1" />
                 <span>Back to plans</span>
               </Link>
-              <h1 className="text-2xl font-bold text-plansync-purple-900 font-aclonica capitalize">
+              <h1 className="text-2xl font-bold text-plansync-purple-900 font-lilita-one capitalize">
                 {isLoading ? "Loading plan..." : plan.title}
               </h1>
               <div className="flex items-center gap-4 mt-1">
                 <div className="flex items-center gap-1 text-sm text-muted-foreground">
                   <Calendar className="w-4 h-4" />
                   <span>
-                    {format(
-                      parseISO(plan.created_at),
-                      "MMM d, yyyy"
-                    )}
+                    {format(parseISO(plan.created_at), "MMM d, yyyy")}
                   </span>
                 </div>
                 <div className="flex items-center gap-1 text-sm text-muted-foreground">
@@ -238,7 +241,7 @@ const PlanDetail = () => {
 
           {/* Periods Tabs */}
           <div className="mb-8">
-            <PeriodsTabs 
+            <PeriodsTabs
               activePeriod={activePeriod}
               plan={plan}
               onPeriodClick={(periodId) => setActivePeriod(periodId)}
@@ -251,10 +254,12 @@ const PlanDetail = () => {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="capitalize font-aclonica">Plan {periodUnit}s Content</CardTitle>
+                  <CardTitle className="capitalize font-lilita-one">
+                    Plan {periodUnit}s Content
+                  </CardTitle>
                   <CardDescription className="mt-2">
                     Drag and drop to reorder {periodUnit}s and {blockUnit}s
-                  </CardDescription>                
+                  </CardDescription>
                 </div>
                 {activePeriod && (
                   <Button
@@ -263,7 +268,7 @@ const PlanDetail = () => {
                     onClick={() => setActivePeriod(null)}
                     className={cn(
                       "text-xs capitalize",
-                      activePeriod === null && "hidden"
+                      activePeriod === null && "hidden",
                     )}
                   >
                     View All {periodUnit}s
@@ -275,10 +280,7 @@ const PlanDetail = () => {
               {isLoading ? (
                 <div className="animate-pulse space-y-4">
                   {[1, 2, 3].map((i) => (
-                    <div
-                      key={i}
-                      className="h-20 bg-gray-100 rounded-md"
-                    ></div>
+                    <div key={i} className="h-20 bg-gray-100 rounded-md"></div>
                   ))}
                 </div>
               ) : error ? (
@@ -307,7 +309,7 @@ const PlanDetail = () => {
                           ?.filter(
                             (period) =>
                               activePeriod === null ||
-                              period.id === activePeriod
+                              period.id === activePeriod,
                           )
                           .map((period, index) => (
                             <DroppablePeriod

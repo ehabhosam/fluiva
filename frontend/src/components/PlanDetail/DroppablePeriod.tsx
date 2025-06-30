@@ -58,7 +58,7 @@ const DroppablePeriod: React.FC<DroppablePeriodProps> = ({
                   )}
                 </Button>
                 <div>
-                  <h3 className="font-medium text-sm capitalize font-aclonica">
+                  <h3 className="font-medium text-sm capitalize font-lilita-one">
                     {periodUnit} {period.index + 1}
                   </h3>
                   <div className="text-xs text-muted-foreground flex items-center gap-1">
