@@ -14,24 +14,27 @@ interface TaskInputProps {
 }
 
 const TaskInput = forwardRef<HTMLDivElement, TaskInputProps>(
-  ({ taskText, taskHours, onTaskTextChange, onTaskHoursChange, onAddTask }, ref) => {
+  (
+    { taskText, taskHours, onTaskTextChange, onTaskHoursChange, onAddTask },
+    ref,
+  ) => {
     return (
       <motion.div
         ref={ref}
-        className="fixed bottom-6 left-1/2 transform -translate-x-1/2 w-full max-w-md"
+        className="fixed bottom-16 md:bottom-6 left-0 right-0 mx-auto w-full max-w-lg px-4 z-50"
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: "spring", bounce: 0.4 }}
       >
-        <Card className="shadow-lg border-2 border-plansync-purple-200">
+        <Card className="shadow-lg border-2 border-plansync-purple-200 floating-card">
           <CardContent className="p-4">
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <div className="flex-1">
                 <Input
                   placeholder="What do you need to do?"
                   value={taskText}
                   onChange={(e) => onTaskTextChange(e.target.value)}
-                  className="border-2 focus:border-plansync-purple-500"
+                  className="border-2"
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && taskText.trim() !== "") {
                       onAddTask();
@@ -39,10 +42,12 @@ const TaskInput = forwardRef<HTMLDivElement, TaskInputProps>(
                   }}
                 />
               </div>
-              <div className="flex items-center gap-2 min-w-20">
+              <div className="flex items-center justify-center gap-2 min-w-20 my-2 sm:my-0">
                 <button
                   type="button"
-                  onClick={() => taskHours > 1 && onTaskHoursChange(taskHours - 1)}
+                  onClick={() =>
+                    taskHours > 1 && onTaskHoursChange(taskHours - 1)
+                  }
                   className="text-gray-500 hover:text-plansync-purple-700 px-2 py-1"
                 >
                   -
@@ -58,7 +63,7 @@ const TaskInput = forwardRef<HTMLDivElement, TaskInputProps>(
               </div>
               <Button
                 onClick={onAddTask}
-                className="gradient-bg"
+                className="gradient-bg w-full sm:w-auto"
                 disabled={!taskText.trim() || taskHours <= 0}
               >
                 <Plus className="w-4 h-4 mr-1" />
@@ -69,7 +74,7 @@ const TaskInput = forwardRef<HTMLDivElement, TaskInputProps>(
         </Card>
       </motion.div>
     );
-  }
+  },
 );
 
 TaskInput.displayName = "TaskInput";

@@ -3,15 +3,19 @@ import TaskCard, { Task } from "@/components/OverwhelmOrganizer/TaskCard";
 import TaskInput from "@/components/OverwhelmOrganizer/TaskInput";
 import useTasks from "@/hooks/use-tasks";
 import { nanoid } from "nanoid";
-import React, { useRef } from "react";
+import React, { useCallback, useRef, useState } from "react";
+import { useDebouncedCallback } from "use-debounce";
 
 const OverwhelmOrganizer: React.FC = () => {
   const { tasks, addTask, updateTask, updateTasks, removeTask, clearTasks } =
     useTasks();
   const [taskText, setTaskText] = React.useState("");
   const [taskHours, setTaskHours] = React.useState(1);
-  const [isDragging, setIsDragging] = React.useState(false);
-  const [currentTask, setCurrentTask] = React.useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [currentTask, setCurrentTask] = useState<string | null>(null);
+  const dragPositionRef = useRef<{ [key: string]: { x: number; y: number } }>(
+    {},
+  );
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLDivElement>(null);
   const colors = [
@@ -82,18 +86,52 @@ const OverwhelmOrganizer: React.FC = () => {
     updateTasks(updatedTasks);
   };
 
+  const debouncedUpdatePosition = useDebouncedCallback(
+    (taskId: string, position: { x: number; y: number }) => {
+      if (taskId !== currentTask) {
+        updateTask(taskId, { position });
+      }
+    },
+    200, // 200ms debounce time - increased to reduce state updates
+    { maxWait: 300 }, // maximum time to wait before updating
+  );
+
   const handleDrag = (taskId: string, x: number, y: number) => {
-    // Update position of the dragged task
-    updateTask(taskId, { position: { x, y } });
+    if (taskId === currentTask) {
+      // For currently dragged card, immediately update position without state change
+      dragPositionRef.current[taskId] = { x, y };
+    } else {
+      // For other cards (pushed by collision), use debounced updates
+      dragPositionRef.current[taskId] = { x, y };
+      debouncedUpdatePosition(taskId, { x, y });
+    }
 
-    // Check for collisions and handle them
-    handleCollisions(taskId);
+    // Only check for collisions periodically (debounced)
+    debouncedHandleCollisions(taskId);
   };
 
-  const handleDragEnd = () => {
+  const handleDragEnd = useCallback(() => {
     setIsDragging(false);
+
+    // If there's a current task, ensure its final position is updated in state
+    if (currentTask && dragPositionRef.current[currentTask]) {
+      const position = dragPositionRef.current[currentTask];
+
+      // Update state immediately on drag end
+      updateTask(currentTask, { position });
+
+      // Clean up
+      delete dragPositionRef.current[currentTask];
+    }
+
     setCurrentTask(null);
-  };
+  }, [currentTask, updateTask]);
+
+  // Debounced collision handler to prevent excessive calculations
+  const debouncedHandleCollisions = useDebouncedCallback(
+    (taskId: string) => handleCollisions(taskId),
+    150, // 150ms debounce time for collision detection
+  );
 
   // Function to handle collisions between tasks
   const handleCollisions = (taskId: string) => {
@@ -102,7 +140,12 @@ const OverwhelmOrganizer: React.FC = () => {
     const currentTaskIndex = tasks.findIndex((t) => t.id === taskId);
     if (currentTaskIndex === -1) return;
 
-    const currentTaskObj = tasks[currentTaskIndex];
+    // Use the current position from the ref if available (for smoother updates)
+    const currentTaskObj = {
+      ...tasks[currentTaskIndex],
+      position:
+        dragPositionRef.current[taskId] || tasks[currentTaskIndex].position,
+    };
     const currentRect = {
       left: currentTaskObj.position.x,
       right: currentTaskObj.position.x + 150, // Approximate width
@@ -171,8 +214,9 @@ const OverwhelmOrganizer: React.FC = () => {
           newY = Math.max(0, Math.min(newY, containerRect.height - 100));
         }
 
-        // Update the other task's position
-        updateTask(otherTask.id, { position: { x: newX, y: newY } });
+        // Store the updated position in the ref and update state in a debounced manner
+        dragPositionRef.current[otherTask.id] = { x: newX, y: newY };
+        debouncedUpdatePosition(otherTask.id, { x: newX, y: newY });
       }
     });
   };
@@ -207,15 +251,32 @@ const OverwhelmOrganizer: React.FC = () => {
           {tasks.map((task) => (
             <TaskCard
               key={task.id}
-              task={task}
+              task={{
+                ...task,
+                position: dragPositionRef.current[task.id] || task.position,
+              }}
               containerRef={containerRef}
               isSelected={currentTask === task.id}
               onDragStart={handleDragStart}
               onDrag={handleDrag}
               onDragEnd={handleDragEnd}
+              dragElastic={0}
+              dragTransition={{ power: 0, timeConstant: 0 }}
               onDelete={removeTask}
             />
           ))}
+          {tasks.length === 0 && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-muted-foreground">
+              <img
+                src="assets/idea.png"
+                alt="No tasks"
+                className="w-32 mx-auto"
+              />
+              <p className="text-center text-muted-foreground mt-2">
+                Start clearing your mind ...
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Floating Input */}
