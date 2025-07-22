@@ -3,12 +3,13 @@ import { PlanType } from "@/api/types";
 import AuthGuard from "@/components/AuthGuard";
 import { Layout } from "@/components/Layout";
 import Loading from "@/components/Loading";
+import OverwhelmedPopCard from "@/components/OverwhelmOrganizer/OverwhelmedPopCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/use-auth";
 import { useQuery } from "@tanstack/react-query";
 import { format, parseISO } from "date-fns";
-import { Calendar, Clock, LayoutDashboard, PlusCircle } from "lucide-react";
+import { Calendar, Clock, PlusCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const PlanTypeIcon = ({ type }: { type: PlanType }) => {
@@ -64,6 +65,7 @@ const Home = () => {
     <AuthGuard>
       <Layout>
         <div className="space-y-6">
+          <OverwhelmedPopCard />
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-plansync-purple-900 font-lilita-one">
@@ -72,23 +74,6 @@ const Home = () => {
               <p className="text-muted-foreground">
                 View and manage all your productivity plans
               </p>
-            </div>
-            <div className="flex gap-2">
-              <Link to="/overwhelm-organizer">
-                <Button
-                  variant="outline"
-                  className="border-plansync-purple-600 text-plansync-purple-800 font-lilita-one"
-                >
-                  <LayoutDashboard className="w-4 h-4 mr-2" />
-                  Overwhelm Organizer
-                </Button>
-              </Link>
-              <Link to="/plans/new">
-                <Button className="gradient-bg font-lilita-one">
-                  <PlusCircle className="w-4 h-4 mr-2" />
-                  Create Plan
-                </Button>
-              </Link>
             </div>
           </div>
 
@@ -176,6 +161,17 @@ const Home = () => {
                   </Card>
                 </Link>
               ))}
+              <Link to="/plans/new">
+                <Card className="h-full flex flex-col items-center justify-center p-6 bg-white border-2 border-dashed border-gray-200 cursor-pointer hover:border-plansync-purple-300 hover:bg-gray-50 transition-colors">
+                  <PlusCircle className="w-12 h-12 mb-4 text-plansync-purple-600" />
+                  <h3 className="text-lg font-lilita-one text-plansync-purple-900">
+                    Create New Plan
+                  </h3>
+                  <p className="text-sm text-muted-foreground text-center mt-2">
+                    Add a new productivity plan to your collection
+                  </p>
+                </Card>
+              </Link>
             </div>
           )}
         </div>
