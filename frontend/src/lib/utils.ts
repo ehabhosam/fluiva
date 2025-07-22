@@ -27,3 +27,12 @@ export function divisor(total: number, value: number) {
 
   return Math.ceil(total / value);
 }
+
+export function formatDate(dateStr: string): string {
+  const date = new Date(dateStr);
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short", // "Jun"
+    day: "numeric", // "27"
+    year: "numeric", // "2025"
+  }).format(date); // → "Jun 27, 2025"
+}

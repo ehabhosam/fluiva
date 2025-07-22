@@ -5,11 +5,11 @@ import { Layout } from "@/components/Layout";
 import Loading from "@/components/Loading";
 import OverwhelmedPopCard from "@/components/OverwhelmOrganizer/OverwhelmedPopCard";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useAuth } from "@/hooks/use-auth";
+import { formatDate } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { format, parseISO } from "date-fns";
-import { Calendar, Clock, PlusCircle } from "lucide-react";
+import { Calendar, Clock, List, PlusCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const PlanTypeIcon = ({ type }: { type: PlanType }) => {
@@ -116,54 +116,38 @@ const Home = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {plans.map((plan) => (
-                <Link key={plan.id} to={`/plans/${plan.id}`}>
-                  <Card className="h-full card-hover overflow-hidden">
-                    <div
-                      className={`h-2 ${
-                        plan.type === PlanType.DAILY
-                          ? "gradient-bg"
-                          : plan.type === PlanType.WEEKLY
-                            ? "gradient-bg-teal"
-                            : "bg-blue-600"
-                      }`}
-                    ></div>
-                    <CardHeader className="flex flex-row items-center gap-3">
-                      <PlanTypeIcon type={plan.type} />
-                      <div>
-                        <CardTitle className="text-lg font-lilita-one">
-                          {plan.title}
-                        </CardTitle>
-                        <div className="text-sm text-muted-foreground">
-                          {plan.type.toLowerCase()} plan
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <p className="text-sm text-muted-foreground line-clamp-2">
-                        {plan.description}
+                <Link key={plan.id} to={`/plans/${plan.id}`} className="h-full">
+                  <Card className="relative p-4 rounded-xl shadow-sm border border-purple-100 bg-[linear-gradient(135deg,rgba(128,90,213,0.09),rgba(168,85,247,0.03))] hover:shadow-md transition-all h-full">
+                    <div className="text-xs font-semibold text-purple-600 uppercase mb-2 tracking-wider">
+                      {plan.type}
+                    </div>
+
+                    <div>
+                      <h2 className="text-lg font-bold text-gray-800">
+                        {plan.title}
+                      </h2>
+                      <p className="text-sm text-gray-600">
+                        {plan.description || "No description provided."}
                       </p>
-                      <div className="flex items-center justify-between text-sm text-muted-foreground">
-                        <div className="flex items-center gap-1">
-                          <Calendar className="w-4 h-4" />
-                          <span>
-                            {format(parseISO(plan.created_at), "MMM d, yyyy")}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Clock className="w-4 h-4" />
-                          <span>
-                            {plan._count.todos} items • {plan._count.periods}{" "}
-                            periods
-                          </span>
-                        </div>
-                      </div>
-                    </CardContent>
+                    </div>
+
+                    <div className="mt-4 pt-3 border-t border-purple-100 text-xs text-gray-500 flex justify-between">
+                      <span className="flex items-center gap-1">
+                        <Calendar size={14} /> {formatDate(plan.created_at)}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <List size={14} /> {plan._count.todos} items
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Clock size={14} /> {plan._count.periods} periods
+                      </span>
+                    </div>
                   </Card>
                 </Link>
               ))}
-              <Link to="/plans/new">
-                <Card className="h-full flex flex-col items-center justify-center p-6 bg-white border-2 border-dashed border-gray-200 cursor-pointer hover:border-plansync-purple-300 hover:bg-gray-50 transition-colors">
-                  <PlusCircle className="w-12 h-12 mb-4 text-plansync-purple-600" />
+              <Link to="/plans/new" className="h-full">
+                <Card className="flex flex-col items-center justify-center p-6 bg-white border-2 border-dashed border-gray-200 cursor-pointer hover:border-plansync-purple-300 hover:bg-gray-50 transition-colors h-full">
+                  <PlusCircle className="w-12 h-12 mb-2 text-plansync-purple-600" />
                   <h3 className="text-lg font-lilita-one text-plansync-purple-900">
                     Create New Plan
                   </h3>

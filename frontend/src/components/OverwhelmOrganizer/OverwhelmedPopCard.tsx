@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { ArrowRightCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
@@ -26,7 +27,7 @@ export default function OverwhelmedPopCard() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.4 }}
-            className="text-6xl font-bold mt-4 text-center font-lilita-one uppercase tracking-widest relative flex items-center justify-center"
+            className="text-3xl md:text-4xl lg:text-6xl font-bold mt-4 text-center font-lilita-one uppercase tracking-widest relative flex items-center justify-center"
           >
             Overwhelmed?
           </motion.h1>
@@ -39,9 +40,10 @@ export default function OverwhelmedPopCard() {
             <Link to="/overwhelm-organizer">
               <Button
                 variant="ghost"
-                className="border-plansync-purple-600 hover:text-plansync-purple-800 font-bold text-xl"
+                className="border-plansync-purple-600 hover:text-plansync-purple-800 font-bold text-md lg:text-xl"
               >
-                Let's Handle It
+                Let's Handle It{" "}
+                <ArrowRightCircle className="ml-2 h-6 w-6 inline-block" />
               </Button>
             </Link>
           </motion.div>
