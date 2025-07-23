@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import useAutoFocus from "@/hooks/use-auto-focus";
 import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
-import { forwardRef } from "react";
+import { forwardRef, useRef } from "react";
 
 interface TaskInputProps {
   taskText: string;
@@ -18,6 +19,10 @@ const TaskInput = forwardRef<HTMLDivElement, TaskInputProps>(
     { taskText, taskHours, onTaskTextChange, onTaskHoursChange, onAddTask },
     ref,
   ) => {
+    const inputRef = useRef(null)
+
+    // auto focus input on char click 
+    useAutoFocus(inputRef)
     return (
       <motion.div
         ref={ref}
@@ -40,6 +45,7 @@ const TaskInput = forwardRef<HTMLDivElement, TaskInputProps>(
                       onAddTask();
                     }
                   }}
+                  ref={inputRef}
                 />
               </div>
               <div className="flex items-center justify-center gap-2 min-w-20 my-2 sm:my-0">

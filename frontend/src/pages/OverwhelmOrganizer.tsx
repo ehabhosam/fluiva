@@ -1,6 +1,7 @@
 import { Layout } from "@/components/Layout";
 import TaskCard, { Task } from "@/components/OverwhelmOrganizer/TaskCard";
 import TaskInput from "@/components/OverwhelmOrganizer/TaskInput";
+import useAutoFocus from "@/hooks/use-auto-focus";
 import useTasks from "@/hooks/use-tasks";
 import { nanoid } from "nanoid";
 import React, { useCallback, useRef, useState } from "react";
