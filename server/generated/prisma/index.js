@@ -185,7 +185,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/home/unixehab/dev/plansync/server/generated/prisma",
+      "value": "/home/goatehab/dev/plansync/server/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -199,12 +199,11 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/home/unixehab/dev/plansync/server/prisma/schema.prisma",
+    "sourceFilePath": "/home/goatehab/dev/plansync/server/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null,
-    "schemaEnvPath": "../../.env"
+    "rootEnvPath": null
   },
   "relativePath": "../../prisma",
   "clientVersion": "6.8.2",
@@ -213,7 +212,7 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
-  "postinstall": false,
+  "postinstall": true,
   "inlineDatasources": {
     "db": {
       "url": {
