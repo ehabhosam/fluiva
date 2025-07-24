@@ -19,10 +19,11 @@ export default function OverwhelmedPopCard() {
             animate={{ scale: 1 }}
             transition={{ duration: 0.7 }}
             src="assets/overwhelmed.gif"
-            className="w-full h-full object-cover z-0 bg-purple-950"
+            className="w-full h-full object-cover z-0 bg-purple-950 opacity-50"
           />
         </div>
-        <div className="relative z-10 p-3">
+        <div className="relative p-3">
+          <div className="absolute inset-0 bg-black/30 rounded-full blur-xl pointer-events-none"></div>
           <motion.h1
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -35,7 +36,7 @@ export default function OverwhelmedPopCard() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.5 }}
-            className="flex justify-center mt-3 mb-2"
+            className="flex justify-center mt-3 mb-2 z-10"
           >
             <Link to="/overwhelm-organizer">
               <Button

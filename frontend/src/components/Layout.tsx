@@ -81,22 +81,20 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div className="flex items-center justify-around h-16">
               <Link
                 to="/"
-                className={`flex flex-col items-center justify-center w-full py-2 ${
-                  location.pathname === "/"
-                    ? "text-plansync-purple-600"
-                    : "text-gray-500"
-                }`}
+                className={`flex flex-col items-center justify-center w-full py-2 ${location.pathname === "/"
+                  ? "text-plansync-purple-600"
+                  : "text-gray-500"
+                  }`}
               >
                 <Home className="w-5 h-5" />
                 <span className="text-xs mt-1">Home</span>
               </Link>
               <Link
                 to="/plans/new"
-                className={`flex flex-col items-center justify-center w-full py-2 ${
-                  location.pathname === "/plans/new"
-                    ? "text-plansync-purple-600"
-                    : "text-gray-500"
-                }`}
+                className={`flex flex-col items-center justify-center w-full py-2 ${location.pathname === "/plans/new"
+                  ? "text-plansync-purple-600"
+                  : "text-gray-500"
+                  }`}
               >
                 <PlusCircle className="w-5 h-5" />
                 <span className="text-xs mt-1">New Plan</span>
@@ -107,19 +105,19 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       )}
 
       {/* Footer */}
-      <footer className="py-6 bg-white border-t border-gray-200 mt-auto">
+      <footer className="py-6 bg-plansync-purple-950 border-t border-gray-800 mt-auto">
         <div className="container px-4 mx-auto text-center">
           <div className="mb-2">
-            <span className="text-plansync-purple-900 font-bold">PlanSync</span>
-            <span className="text-gray-600"> - Your Personal Productivity Companion</span>
+            <span className="text-plansync-purple-100 font-bold">PlanSync</span>
+            <span className="text-gray-400"> - Your Personal Productivity Companion</span>
           </div>
-          <div className="text-sm text-gray-500">
+          <div className="text-sm text-gray-400">
             Developed with ❤️ by{" "}
             <a
               href="https://github.com/ehabhosam"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-plansync-purple-600 hover:underline"
+              className="text-plansync-purple-400 hover:underline"
             >
               @ehabhosam
             </a>
