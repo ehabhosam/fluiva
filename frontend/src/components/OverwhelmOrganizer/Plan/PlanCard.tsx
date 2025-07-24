@@ -12,7 +12,7 @@ export default function PlanCard(props: PlanCardProps) {
     const { plan } = props;
 
     return <Link key={plan.id} to={`/plans/${plan.id}`} className="h-full">
-        <Card className="relative p-4 rounded-xl shadow-sm border border-purple-100 bg-[linear-gradient(135deg,rgba(128,90,213,0.09),rgba(168,85,247,0.03))] hover:shadow-md transition-all h-full">
+        <Card className="relative p-4 rounded-xl shadow-sm border border-purple-100 bg-[linear-gradient(135deg,rgba(128,90,213,0.09),rgba(168,85,247,0.03))] hover:shadow-md transition-all h-full flex flex-col justify-between">
             <div className="text-xs font-semibold text-purple-600 uppercase mb-2 tracking-wider">
                 {plan.type}
             </div>
