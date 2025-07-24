@@ -97,21 +97,19 @@ const OverwhelmOrganizer: React.FC = () => {
           )}
         </div>
 
-          {/* Spacer */}
-          <div className="h-[10vh]"></div>
+        {/* Spacer */}
+        <div className="h-[10vh]"></div>
 
-          {/* Task Input */}
-          <TaskInputComponent
-            ref={inputRef}
-            taskText={taskInput.taskText}
-            taskHours={taskInput.taskHours}
-            onTaskTextChange={taskInput.setTaskText}
-            onTaskHoursChange={taskInput.setTaskHours}
-            onAddTask={handleAddTask}
-            shouldFocus={!overwhelmFlow.isPlanCustomizationOpen}
-          />
-
-        
+        {/* Task Input */}
+        <TaskInputComponent
+          ref={inputRef}
+          taskText={taskInput.taskText}
+          taskHours={taskInput.taskHours}
+          onTaskTextChange={taskInput.setTaskText}
+          onTaskHoursChange={taskInput.setTaskHours}
+          onAddTask={handleAddTask}
+          shouldFocus={!overwhelmFlow.isPlanCustomizationOpen}
+        />
 
         {/* Step 1: Confirmation Popup */}
         <ConfirmationPopup

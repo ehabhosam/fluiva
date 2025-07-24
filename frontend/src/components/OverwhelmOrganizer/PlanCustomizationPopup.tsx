@@ -94,30 +94,17 @@ const PlanCustomizationPopup: React.FC<PlanCustomizationPopupProps> = ({
             </div>
           </div>
 
-          {/* Preview section */}
-          <div className="bg-gray-50 rounded-lg p-4 space-y-2">
-            <h4 className="font-medium text-sm text-gray-700">Preview:</h4>
-            <div className="space-y-1">
-              <p className="font-medium text-gray-900">
-                {title.trim() || defaultTitle}
-              </p>
-              <p className="text-sm text-gray-600">
-                {description.trim() || defaultDescription}
-              </p>
-            </div>
-          </div>
-
           <div className="flex justify-between">
-            <Button 
-              type="button" 
-              variant="outline" 
+            <Button
+              type="button"
+              variant="outline"
               onClick={handleClose}
               disabled={isCreating}
             >
               Cancel
             </Button>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               className="gradient-bg"
               disabled={isCreating}
             >
