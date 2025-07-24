@@ -63,7 +63,7 @@ const OverwhelmOrganizer: React.FC = () => {
 
         <div
           ref={containerRef}
-          className={`relative w-full !h-[70vh] bg-gray-50 border-2 border-dashed border-gray-200 rounded-lg overflow-hidden`}
+          className={`relative w-full !h-[70vh] bg-white/70 border-2 border-dashed border-gray-200 rounded-lg overflow-hidden`}
         >
           {/* Tasks */}
           {tasks.map((task) => (

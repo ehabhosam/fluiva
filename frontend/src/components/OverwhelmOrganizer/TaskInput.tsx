@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import useAutoFocus from "@/hooks/use-auto-focus";
 import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
-import { forwardRef, useRef } from "react";
+import { forwardRef, useEffect, useRef } from "react";
 
 interface TaskInputProps {
   taskText: string;
@@ -24,6 +24,21 @@ const TaskInput = forwardRef<HTMLDivElement, TaskInputProps>(
 
     // auto focus input on char click 
     useAutoFocus(inputRef, shouldFocus)
+
+    // clicking up and down on hours should increment/decrement hours
+    const handleHoursKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowUp") {
+        onTaskHoursChange(taskHours + 1);
+      } else if (e.key === "ArrowDown" && taskHours > 1) {
+        onTaskHoursChange(taskHours - 1);
+      }
+    };
+
+    useEffect(() => {
+      window.addEventListener("keydown", handleHoursKeyDown);
+      return () => window.removeEventListener("keydown", handleHoursKeyDown);
+    }, [taskHours])
+
     return (
       <motion.div
         ref={ref}
@@ -49,24 +64,29 @@ const TaskInput = forwardRef<HTMLDivElement, TaskInputProps>(
                   ref={inputRef}
                 />
               </div>
-              <div className="flex items-center justify-center gap-2 min-w-20 my-2 sm:my-0">
-                <button
-                  type="button"
-                  onClick={() =>
-                    taskHours > 1 && onTaskHoursChange(taskHours - 1)
-                  }
-                  className="text-gray-500 hover:text-plansync-purple-700 px-2 py-1"
-                >
-                  -
-                </button>
-                <span className="min-w-8 text-center">{taskHours}h</span>
-                <button
-                  type="button"
-                  onClick={() => onTaskHoursChange(taskHours + 1)}
-                  className="text-gray-500 hover:text-plansync-purple-700 px-2 py-1"
-                >
-                  +
-                </button>
+              <div className="flex flex-col">
+                <div className="flex items-center justify-center gap-2 min-w-20 my-2 sm:my-0">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      taskHours > 1 && onTaskHoursChange(taskHours - 1)
+                    }
+                    className="text-gray-500 hover:text-plansync-purple-700 px-2 py-1"
+                  >
+                    -
+                  </button>
+                  <span className="min-w-8 text-center">{taskHours}h</span>
+                  <button
+                    type="button"
+                    onClick={() => onTaskHoursChange(taskHours + 1)}
+                    className="text-gray-500 hover:text-plansync-purple-700 px-2 py-1"
+                  >
+                    +
+                  </button>
+                </div>
+                <span
+                  className="text-[0.6rem] text-muted-foreground w-full text-center hidden md:block"
+                >use up/down arrows</span>
               </div>
               <Button
                 onClick={onAddTask}
