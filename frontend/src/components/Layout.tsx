@@ -28,7 +28,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   };
 
   return (
-    <div className="min-h-screen bg-background font-primary">
+    <div className="min-h-screen flex flex-col bg-[linear-gradient(30deg,rgba(221,214,254,0.8),rgba(237,221,83,0)100%)] font-primary">
       {/* Header */}
       <header className="sticky top-0 z-10 bg-white border-b border-gray-200">
         <div className="container flex items-center justify-between h-16 px-4 mx-auto">
@@ -72,7 +72,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       </header>
 
       {/* Main Content */}
-      <main className="container px-4 py-6 mx-auto">{children}</main>
+      <main className="container px-4 py-6 mx-auto flex-grow">{children}</main>
 
       {/* Bottom Navigation (mobile) */}
       {user && (
@@ -105,6 +105,27 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
         </div>
       )}
+
+      {/* Footer */}
+      <footer className="py-6 bg-white border-t border-gray-200 mt-auto">
+        <div className="container px-4 mx-auto text-center">
+          <div className="mb-2">
+            <span className="text-plansync-purple-900 font-bold">PlanSync</span>
+            <span className="text-gray-600"> - Your Personal Productivity Companion</span>
+          </div>
+          <div className="text-sm text-gray-500">
+            Developed with ❤️ by{" "}
+            <a
+              href="https://github.com/goatehab"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-plansync-purple-600 hover:underline"
+            >
+              @ehabhosam
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

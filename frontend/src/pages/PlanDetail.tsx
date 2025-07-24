@@ -168,6 +168,13 @@ const PlanDetail = () => {
     });
   };
 
+  const handleEditPlan = () => {
+    toast({
+      title: "Edit Plan",
+      description: "to be implemented, entazeroona",
+    });
+  }
+
   if (isLoading) {
     return (
       <Layout>
@@ -233,7 +240,7 @@ const PlanDetail = () => {
                 </p>
               )}
             </div>
-            <Button variant="outline" className="flex gap-2 items-center">
+            <Button variant="outline" className="flex gap-2 items-center" onClick={handleEditPlan}>
               <Edit className="w-4 h-4" />
               <span>Edit Plan</span>
             </Button>

@@ -9,8 +9,8 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useAuth } from "@/hooks/use-auth";
 import { formatDate } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { Calendar, Clock, List, PlusCircle } from "lucide-react";
-import { Link, Navigate } from "react-router-dom";
+import { ArrowRightCircle, Calendar, Clock, List, PlusCircle } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const { user } = useAuth();
@@ -26,20 +26,12 @@ const Home = () => {
     enabled: !!user,
   });
 
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
   if (isLoading) {
     return (
       <Layout>
         <Loading />
       </Layout>
     );
-  }
-
-  if (!plans) {
-    return "something bad occurred fetching data. Please report the developer.";
   }
 
   return (
@@ -56,6 +48,9 @@ const Home = () => {
                 View and manage all your productivity plans
               </p>
             </div>
+            <Link to="/plans/new">
+              <Button className="gradient-bg">New Plan <ArrowRightCircle className="w-4 h-4" /></Button>
+            </Link>
           </div>
 
           {isLoading ? (
@@ -80,7 +75,7 @@ const Home = () => {
                 Try Again
               </Button>
             </div>
-          ) : plans.length === 0 ? (
+          ) : plans?.length === 0 ? (
             <div className="flex flex-col items-center justify-center p-12 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50">
               <div className="w-16 h-16 mb-4 rounded-full gradient-bg flex items-center justify-center">
                 <PlusCircle className="w-8 h-8 text-white" />
@@ -96,7 +91,7 @@ const Home = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {plans.map((plan) => (
+              {plans?.map((plan) => (
                 <Link key={plan.id} to={`/plans/${plan.id}`} className="h-full">
                   <Card className="relative p-4 rounded-xl shadow-sm border border-purple-100 bg-[linear-gradient(135deg,rgba(128,90,213,0.09),rgba(168,85,247,0.03))] hover:shadow-md transition-all h-full">
                     <div className="text-xs font-semibold text-purple-600 uppercase mb-2 tracking-wider">
@@ -139,6 +134,7 @@ const Home = () => {
               </Link>
             </div>
           )}
+          
         </div>
       </Layout>
     </AuthGuard>

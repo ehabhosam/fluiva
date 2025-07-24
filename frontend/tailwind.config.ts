@@ -101,6 +101,11 @@ export default {
             900: "#134E4A",
             950: "#042F2E",
           },
+
+          gradient: {
+            fade: "linear-gradient(45deg,rgba(221, 214, 254, 1) 0%, rgba(237, 221, 83, 0) 100%)",
+          },
+          
         },
       },
       borderRadius: {

@@ -33,7 +33,7 @@ export function useOverwhelmFlow(tasks: Task[], clearTasks: () => void) {
         description: `Your plan has been created with ${tasks.length} tasks.`,
       });
       clearTasks();
-      navigate(`/plan/${response.plan.id}`);
+      navigate(`/plans/${response.plan.id}`);
     },
     onError: (error: any) => {
       toast({
