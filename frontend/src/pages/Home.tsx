@@ -10,28 +10,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { formatDate } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { Calendar, Clock, List, PlusCircle } from "lucide-react";
-import { Link } from "react-router-dom";
-
-const PlanTypeIcon = ({ type }: { type: PlanType }) => {
-  switch (type) {
-    case PlanType.DAILY:
-      return (
-        <div className="rounded-full p-2 bg-plansync-purple-100 text-plansync-purple-600">
-          D
-        </div>
-      );
-    case PlanType.WEEKLY:
-      return (
-        <div className="rounded-full p-2 bg-plansync-teal-100 text-plansync-teal-600">
-          W
-        </div>
-      );
-    case PlanType.MONTHLY:
-      return (
-        <div className="rounded-full p-2 bg-blue-100 text-blue-600">M</div>
-      );
-  }
-};
+import { Link, Navigate } from "react-router-dom";
 
 const Home = () => {
   const { user } = useAuth();
@@ -47,7 +26,9 @@ const Home = () => {
     enabled: !!user,
   });
 
-  console.log(error);
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
 
   if (isLoading) {
     return (
