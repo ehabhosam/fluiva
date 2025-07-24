@@ -116,7 +116,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="text-sm text-gray-500">
             Developed with ❤️ by{" "}
             <a
-              href="https://github.com/goatehab"
+              href="https://github.com/ehabhosam"
               target="_blank"
               rel="noopener noreferrer"
               className="text-plansync-purple-600 hover:underline"

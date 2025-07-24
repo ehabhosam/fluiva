@@ -63,7 +63,7 @@ const OverwhelmOrganizer: React.FC = () => {
 
         <div
           ref={containerRef}
-          className={`relative w-full ${LAYOUT.CONTAINER_HEIGHT} bg-gray-50 border-2 border-dashed border-gray-200 rounded-lg overflow-hidden`}
+          className={`relative w-full !h-[70vh] bg-gray-50 border-2 border-dashed border-gray-200 rounded-lg overflow-hidden`}
         >
           {/* Tasks */}
           {tasks.map((task) => (
@@ -97,15 +97,21 @@ const OverwhelmOrganizer: React.FC = () => {
           )}
         </div>
 
-        {/* Floating Input */}
-        <TaskInputComponent
-          ref={inputRef}
-          taskText={taskInput.taskText}
-          taskHours={taskInput.taskHours}
-          onTaskTextChange={taskInput.setTaskText}
-          onTaskHoursChange={taskInput.setTaskHours}
-          onAddTask={handleAddTask}
-        />
+          {/* Spacer */}
+          <div className="h-[10vh]"></div>
+
+          {/* Task Input */}
+          <TaskInputComponent
+            ref={inputRef}
+            taskText={taskInput.taskText}
+            taskHours={taskInput.taskHours}
+            onTaskTextChange={taskInput.setTaskText}
+            onTaskHoursChange={taskInput.setTaskHours}
+            onAddTask={handleAddTask}
+            shouldFocus={!overwhelmFlow.isPlanCustomizationOpen}
+          />
+
+        
 
         {/* Step 1: Confirmation Popup */}
         <ConfirmationPopup

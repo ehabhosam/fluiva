@@ -12,21 +12,22 @@ interface TaskInputProps {
   onTaskTextChange: (value: string) => void;
   onTaskHoursChange: (hours: number) => void;
   onAddTask: () => void;
+  shouldFocus: boolean
 }
 
 const TaskInput = forwardRef<HTMLDivElement, TaskInputProps>(
   (
-    { taskText, taskHours, onTaskTextChange, onTaskHoursChange, onAddTask },
+    { taskText, taskHours, onTaskTextChange, onTaskHoursChange, onAddTask, shouldFocus },
     ref,
   ) => {
     const inputRef = useRef(null)
 
     // auto focus input on char click 
-    useAutoFocus(inputRef)
+    useAutoFocus(inputRef, shouldFocus)
     return (
       <motion.div
         ref={ref}
-        className="fixed bottom-16 md:bottom-6 left-0 right-0 mx-auto w-full max-w-lg px-4 z-50"
+        className="fixed bottom-16 md:bottom-10 left-0 right-0 mx-auto w-full max-w-lg px-4 z-50"
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: "spring", bounce: 0.4 }}

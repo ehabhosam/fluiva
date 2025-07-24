@@ -1,9 +1,10 @@
 import { useEffect } from "react";
 
-export default function useAutoFocus(inputRef: React.RefObject<HTMLInputElement>) {
+export default function useAutoFocus(inputRef: React.RefObject<HTMLInputElement>, shouldFocus: boolean = true) {
     useEffect(() => {
         function handleKeyPress(e: KeyboardEvent) {
             if (
+                shouldFocus &&
                 inputRef.current &&
                 e.key.length === 1 &&
                 /^[a-zA-Z]$/.test(e.key) &&
@@ -24,5 +25,5 @@ export default function useAutoFocus(inputRef: React.RefObject<HTMLInputElement>
         }
         window.addEventListener("keydown", handleKeyPress);
         return () => window.removeEventListener("keydown", handleKeyPress);
-    }, [inputRef]);
+    }, [inputRef, shouldFocus]);
 }
