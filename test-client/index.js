@@ -22,7 +22,7 @@ const plannerService = protoDescriptor.planner.PlannerService; // Note: using 'p
 function main() {
   // Create client using the correct service
   const client = new plannerService(
-    "localhost:50051",
+    "localhost:80",
     grpc.credentials.createInsecure(),
   );
 

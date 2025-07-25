@@ -219,10 +219,10 @@ The service returns standard gRPC error codes:
 
 ## Environment Configuration
 
-The service runs on port `50051` by default, which can be modified using the following environment variables:
+The service runs on port `80` by default, which can be modified using the following environment variables:
 
 - `PLANNER_SERVICE_HOST`: Host address (default: localhost)
-- `PLANNER_SERVICE_PORT`: Port number (default: 50051)
+- `PLANNER_SERVICE_PORT`: Port number (default: 80)
 
 ## Deployment
 
