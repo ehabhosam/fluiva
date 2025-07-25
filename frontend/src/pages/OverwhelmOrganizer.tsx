@@ -18,7 +18,7 @@ const OverwhelmOrganizer: React.FC = () => {
   const { tasks, addTask, updateTask, updateTasks, removeTask, clearTasks } = useTasks();
 
   // Custom hooks for different concerns
-  const overwhelmFlow = useOverwhelmFlow(tasks, clearTasks);
+  const overwhelmFlow = useOverwhelmFlow(tasks);
   const taskDragging = useTaskDragging(tasks, updateTask, updateTasks);
   const taskInput = useTaskInput(tasks, addTask, updateTask);
 

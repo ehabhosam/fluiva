@@ -11,7 +11,7 @@ import {
   getDefaultPlanInfo,
 } from "@/lib/overwhelm";
 
-export function useOverwhelmFlow(tasks: Task[], clearTasks: () => void) {
+export function useOverwhelmFlow(tasks: Task[]) {
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -32,7 +32,6 @@ export function useOverwhelmFlow(tasks: Task[], clearTasks: () => void) {
         title: "Plan Created Successfully!",
         description: `Your plan has been created with ${tasks.length} tasks.`,
       });
-      clearTasks();
       navigate(`/plans/${response.plan.id}`);
     },
     onError: (error: any) => {
@@ -91,7 +90,7 @@ export function useOverwhelmFlow(tasks: Task[], clearTasks: () => void) {
       );
       createPlanMutation.mutate(planRequest);
     }
-    setIsPlanCustomizationOpen(false);
+    // setIsPlanCustomizationOpen(false);
   };
 
   const handlePlanCustomizationClose = () => {
@@ -109,7 +108,7 @@ export function useOverwhelmFlow(tasks: Task[], clearTasks: () => void) {
     isTimeConstraintsOpen,
     isPlanCustomizationOpen,
     selectedConstraints,
-    
+
     // Handlers
     handleHandleTheMess,
     handleConfirmationYes,
@@ -119,11 +118,11 @@ export function useOverwhelmFlow(tasks: Task[], clearTasks: () => void) {
     handleTimeConstraintsClose,
     handlePlanCustomizationComplete,
     handlePlanCustomizationClose,
-    
+
     // Computed values
     totalHours,
     defaultPlanInfo,
-    
+
     // Mutation state
     isCreatingPlan: createPlanMutation.isPending,
   };

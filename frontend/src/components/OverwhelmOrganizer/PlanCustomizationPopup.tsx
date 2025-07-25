@@ -11,6 +11,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Sparkles } from "lucide-react";
 import { useState } from "react";
+import Loading from "../Loading";
+import CreatingPlan from "./CreatingPlan";
 
 interface PlanCustomizationPopupProps {
   isOpen: boolean;
@@ -61,7 +63,7 @@ const PlanCustomizationPopup: React.FC<PlanCustomizationPopupProps> = ({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        {isCreating ? (<CreatingPlan />) : (<form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="plan-title">Plan Title (Optional)</Label>
@@ -111,7 +113,7 @@ const PlanCustomizationPopup: React.FC<PlanCustomizationPopupProps> = ({
               {isCreating ? "Creating Plan..." : "Create Plan"}
             </Button>
           </div>
-        </form>
+        </form>)}
       </DialogContent>
     </Dialog>
   );
