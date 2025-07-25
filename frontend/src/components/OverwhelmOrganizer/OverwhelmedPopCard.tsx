@@ -32,6 +32,14 @@ export default function OverwhelmedPopCard() {
           >
             Overwhelmed?
           </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.4 }}
+            className="text-sm md:text-base lg:text-lg text-center mt-2 relative z-10 max-w-[90%] md:max-w-[70%] m-auto"
+          >
+            We offer a shorter flow that helps you brainstorm what's overflowing your mind and turn it into a a plan!
+          </motion.p>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
