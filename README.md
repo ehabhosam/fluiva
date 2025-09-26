@@ -18,10 +18,10 @@ A productivity web-app that helps people empty their minds out of their tasks an
 It started when I wanted to convert the thinking process I go through when I wanted to study multiple subjects when I was at uni. I wrote an algorithm that automates it, in javascript at first. Then, I tried to build a mobile app that utilizes it, in React Native, but I did not like it a lot. At this point, I had already rewrote it in TypeScript. After like 2 years, I learned Go. I wanted to apply my knowledge and get better, so I thought of rewriting my algorithm in Go. I did it, and here I got the idea of Plansync. Same app, but with new interface and a better tech stack. I built a Nest.js api that interfaces the Go algorithm and adds the logic for CRUDS with the database, so I can have users that can generate, edit and monitor plans. API and Go service communicate through gRPC. I built a UI to deal with the backend and authenticated both using supabase auth. Supabase here is not a full BaaS, but it's used as a database and Auth in a decoupled way that I can easily replace one or both of them. 
 
 ## Optimizations
-*(optional)*
 
 - The algorithm itself can be optimized in terms of time & memory complexity.
 - Adding feature to export plan to google calendar by specifying dates.
+- Optional: revamping the product to have specialized flows per use case. 
 
 ## Lessons Learned:
 
