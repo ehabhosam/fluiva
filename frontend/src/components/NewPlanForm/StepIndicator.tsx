@@ -12,18 +12,18 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({
 }) => {
     return (
         <div className="mb-8">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center mb-10 px-20">
                 {steps.map((step, index) => (
                     <React.Fragment key={index}>
                         {/* Step Circle with Number */}
-                        <div className="flex flex-col items-center">
+                        <div className="flex flex-col items-center relative">
                             <div
                                 className={`flex items-center justify-center w-10 h-10 rounded-full
                   ${
                       index < currentStep
-                          ? "bg-Fluiva-purple-600 text-white"
+                          ? "bg-secondary/80 text-white"
                           : index === currentStep
-                            ? "bg-Fluiva-purple-100 border-2 border-Fluiva-purple-600 text-Fluiva-purple-600"
+                            ? "bg-Fluiva-blue text-white"
                             : "bg-gray-100 text-gray-500"
                   }`}
                             >
@@ -36,12 +36,8 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({
                                 )}
                             </div>
                             <span
-                                className={`text-xs font-medium mt-2 max-w-[80px] text-center
-                  ${
-                      index <= currentStep
-                          ? "text-Fluiva-purple-600"
-                          : "text-gray-500"
-                  }`}
+                                className={`absolute translate-y-[35px] text-xs font-medium mt-2 max-w-[80px] text-center
+                  ${index < currentStep ? "text-secondary" : index === currentStep ? "text-Fluiva-blue font-semibold" : "text-gray-500"}`}
                             >
                                 {step}
                             </span>
@@ -50,12 +46,8 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({
                         {/* Connector Line */}
                         {index < steps.length - 1 && (
                             <div
-                                className={`flex-1 h-1 mx-2
-                  ${
-                      index < currentStep
-                          ? "bg-Fluiva-purple-600"
-                          : "bg-gray-200"
-                  }`}
+                                className={`flex-1 h-1 mx-2 rounded
+                    ${index < currentStep ? "bg-secondary/80" : "bg-gray-200"}`}
                             />
                         )}
                     </React.Fragment>

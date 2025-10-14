@@ -155,7 +155,7 @@ const NewPlan = () => {
 
     return (
         <AuthGuard>
-            <Layout>
+            <Layout footer={false}>
                 <div className="max-w-4xl mx-auto">
                     <div className="mb-6">
                         <h1 className="text-2xl font-bold text-Fluiva-purple-900">
@@ -166,7 +166,7 @@ const NewPlan = () => {
                         </p>
                     </div>
 
-                    <Card className="p-6 bg-white">
+                    <Card className="p-6 bg-white rounded-[2rem]">
                         <StepIndicator
                             currentStep={currentStep}
                             steps={STEPS}
