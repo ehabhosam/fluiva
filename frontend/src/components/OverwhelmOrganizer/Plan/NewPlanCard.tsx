@@ -1,18 +1,17 @@
 import { Card } from "@/components/ui/card";
-import { PlusCircle } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function NewPlanCard() {
     return (
         <Link to="/plans/new" className="h-full">
-            <Card className="flex flex-col items-center justify-center p-6 bg-white border-2 border-dashed border-gray-200 cursor-pointer hover:border-Fluiva-purple-300 hover:bg-gray-50 transition-colors h-full">
-                <PlusCircle className="w-12 h-12 mb-2 text-Fluiva-purple-600" />
-                <h3 className="text-lg font-lilita-one text-Fluiva-purple-900">
-                    Create New Plan
+            <Card className="flex flex-col items-center justify-center p-6 bg-card-new border-0 cursor-pointer scale-90 hover:scale-100 transition-all duration-200 h-full rounded-2xl shadow-lg">
+                <div className="w-12 h-12 mb-4 bg-white rounded-full flex items-center justify-center">
+                    <Plus className="w-10 h-10 text-Fluiva-blue" />
+                </div>
+                <h3 className="text-2xl font-lilita-one text-white">
+                    New Plan
                 </h3>
-                <p className="text-sm text-muted-foreground text-center mt-2">
-                    Add a new productivity plan to your collection
-                </p>
             </Card>
         </Link>
     );

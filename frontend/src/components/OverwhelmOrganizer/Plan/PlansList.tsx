@@ -3,7 +3,7 @@ import Loading from "@/components/Loading";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRightCircle } from "lucide-react";
+import { ArrowRightCircle, PlusCircleIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import CreateFirstPlan from "./CreateFirstPlan";
 import NewPlanCard from "./NewPlanCard";
@@ -32,7 +32,7 @@ export default function PlansList() {
         <>
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-Fluiva-purple-900 font-lilita-one">
+                    <h1 className="text-2xl text-neutral-700 font-lilita-one">
                         My Plans
                     </h1>
                     <p className="text-muted-foreground">
@@ -40,8 +40,8 @@ export default function PlansList() {
                     </p>
                 </div>
                 <Link to="/plans/new">
-                    <Button className="gradient-bg">
-                        New Plan <ArrowRightCircle className="w-4 h-4" />
+                    <Button className="gradient-bg font-bold">
+                        New Plan <PlusCircleIcon className="w-4 h-4" />
                     </Button>
                 </Link>
             </div>
@@ -51,7 +51,7 @@ export default function PlansList() {
             ) : plans?.length === 0 ? (
                 <CreateFirstPlan />
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {plans?.map((plan) => (
                         <PlanCard key={plan.id} plan={plan} />
                     ))}
