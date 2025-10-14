@@ -23,30 +23,44 @@ export class PlanService {
 
   async getUserPlans(userId: string) {
     // Get all active plans for a user with a summary view
-    const plans = await this.prisma.plan.findMany({
-      where: {
-        user_id: userId,
-        deleted_at: null,
-      },
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        type: true,
-        created_at: true,
-        _count: {
-          select: {
-            todos: true,
-            periods: true,
-          },
-        },
-      },
-      orderBy: {
-        created_at: 'desc',
-      },
-    });
+    const plans: any[] = await this.prisma.$queryRaw`
+      SELECT
+        p.id,
+        p.title,
+        p.description,
+        p.type,
+        p.created_at,
+        COUNT(DISTINCT t.id) as todos_count,
+        COUNT(DISTINCT pr.id) as periods_count,
+        CASE
+          WHEN COUNT(b.id) = 0 THEN 0.0
+          ELSE COUNT(CASE WHEN b.done_at IS NOT NULL THEN 1 END)::float / COUNT(b.id)::float
+        END as progress
+      FROM public."Plan" p
+      LEFT JOIN public."Todo" t ON p.id = t.plan_id
+      LEFT JOIN public."Period" pr ON p.id = pr.plan_id
+      LEFT JOIN public."Block" b ON pr.id = b.period_id
+      WHERE p.user_id = ${userId}
+        AND p.deleted_at IS NULL
+      GROUP BY p.id, p.title, p.description, p.type, p.created_at
+      ORDER BY p.created_at DESC
+    `;
 
-    return plans;
+    // Transform the result to match the original structure
+    const transformedPlans = plans.map((plan: any) => ({
+      id: plan.id,
+      title: plan.title,
+      description: plan.description,
+      type: plan.type,
+      created_at: plan.created_at,
+      _count: {
+        todos: Number(plan.todos_count),
+        periods: Number(plan.periods_count),
+      },
+      progress: Number(plan.progress),
+    }));
+
+    return transformedPlans;
   }
 
   async getPlanById(planId: number, userId: string) {
