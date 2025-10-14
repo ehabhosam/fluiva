@@ -39,10 +39,16 @@ export default {
                 "card-new": "linear-gradient(135deg, #C084FC 0%, #60A5FA 100%)",
                 "button-primary":
                     "linear-gradient(90deg, #3B82F6 0%, #8B5CF6 100%)",
+                "button-primary-hover":
+                    "linear-gradient(90deg, #2563EB 0%, #7C3AED 100%)",
                 "button-secondary":
                     "linear-gradient(90deg, #F97316 0%, #EC4899 100%)",
+                "button-secondary-hover":
+                    "linear-gradient(90deg, #EA580C 0%, #DB2777 100%)",
                 "button-accent":
                     "linear-gradient(90deg, #2DD4BF 0%, #34D399 100%)",
+                "button-accent-hover":
+                    "linear-gradient(90deg, #14B8A6 0%, #10B981 100%)",
                 "overwhelm-banner":
                     "linear-gradient(90deg, #60A5FA 0%, #A78BFA 100%)",
             },

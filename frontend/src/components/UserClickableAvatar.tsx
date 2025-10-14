@@ -1,5 +1,4 @@
 import { useAuth } from "@/hooks/use-auth";
-import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import { LogOut } from "lucide-react";
 

@@ -15,7 +15,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     return (
         <div className="min-h-screen flex flex-col bg-[linear-gradient(30deg,rgba(221,214,254,0.8),rgba(237,221,83,0)100%)] font-primary">
             {/* Header */}
-            <header className="sticky top-0 z-10 border-b bg-header-gradient border-gray-200">
+            <header className="sticky top-0 z-20 bg-header-gradient">
                 <div className="container flex items-center justify-between h-16 px-4 mx-auto">
                     <div className="flex items-center gap-2">
                         <Link to="/" className="flex items-center gap-2">
