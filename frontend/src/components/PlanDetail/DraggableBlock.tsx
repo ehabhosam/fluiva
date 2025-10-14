@@ -7,125 +7,126 @@ import { useEffect, useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
 
 interface DraggableBlockProps {
-  block: Block;
-  index: number;
-  onMarkDone: (blockId: number, isDone: boolean) => void;
-  blockUnit: string;
+    block: Block;
+    index: number;
+    onMarkDone: (blockId: number, isDone: boolean) => void;
+    blockUnit: string;
 }
 
 const BlockPriorityColor: Record<string, string> = {
-  HIGH: "border-red-500 bg-red-50",
-  NORMAL: "border-blue-500 bg-blue-50",
-  LOW: "border-green-500 bg-green-50",
-  NULL: "border-gray-300 bg-gray-50", // routine
+    HIGH: "border-red-500 bg-red-50",
+    NORMAL: "border-blue-500 bg-blue-50",
+    LOW: "border-green-500 bg-green-50",
+    NULL: "border-gray-300 bg-gray-50", // routine
 };
 
 export const getDoneStatus = (block: Block): boolean => {
-  return block.done_at !== null;
+    return block.done_at !== null;
 };
 
 const DraggableBlock: React.FC<DraggableBlockProps> = ({
-  block,
-  index,
-  onMarkDone,
-  blockUnit,
+    block,
+    index,
+    onMarkDone,
+    blockUnit,
 }) => {
-  const [isDone, setIsDone] = useState<boolean>(getDoneStatus(block));
-  const todo = block.todo as Todo;
-  const priorityColor = todo.priority
-    ? BlockPriorityColor[todo.priority]
-    : BlockPriorityColor.NULL;
-  const { completeBlock, isBlockLoading } = useCompleteBlock();
+    const [isDone, setIsDone] = useState<boolean>(getDoneStatus(block));
+    const todo = block.todo as Todo;
+    const priorityColor = todo.priority
+        ? BlockPriorityColor[todo.priority]
+        : BlockPriorityColor.NULL;
+    const { completeBlock, isBlockLoading } = useCompleteBlock();
 
-  // Update local state when block prop changes (e.g. from parent rerender)
-  useEffect(() => {
-    setIsDone(getDoneStatus(block));
-  }, [block.done_at]);
+    // Update local state when block prop changes (e.g. from parent rerender)
+    useEffect(() => {
+        setIsDone(getDoneStatus(block));
+    }, [block.done_at]);
 
-  const handleToggleDone = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (isBlockLoading(block.id)) return;
+    const handleToggleDone = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (isBlockLoading(block.id)) return;
 
-    const newStatus = !isDone;
+        const newStatus = !isDone;
 
-    // Optimistically update UI
-    setIsDone(newStatus);
+        // Optimistically update UI
+        setIsDone(newStatus);
 
-    // Call API and notify parent
-    const updatedBlock = await completeBlock(block, newStatus);
-    onMarkDone(block.id, getDoneStatus(updatedBlock));
+        // Call API and notify parent
+        const updatedBlock = await completeBlock(block, newStatus);
+        onMarkDone(block.id, getDoneStatus(updatedBlock));
 
-    // If API call failed, UI will be reverted by the effect hook
-  };
+        // If API call failed, UI will be reverted by the effect hook
+    };
 
-  return (
-    <Draggable draggableId={`block-${block.id}`} index={index}>
-      {(provided, snapshot) => (
-        <div
-          ref={provided.innerRef}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          className="mb-2"
-        >
-          <Card
-            className={cn(
-              "border-l-4 transition-all",
-              priorityColor,
-              snapshot.isDragging && "shadow-lg",
-              isDone && "opacity-60",
-            )}
-          >
-            <CardContent className="p-3 flex items-center justify-between">
-              <div className="flex-1">
-                <h4
-                  className={cn(
-                    "font-medium text-sm",
-                    isDone && "line-through text-gray-500",
-                  )}
+    return (
+        <Draggable draggableId={`block-${block.id}`} index={index}>
+            {(provided, snapshot) => (
+                <div
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    className="mb-2"
                 >
-                  {todo.title}
-                </h4>
-                {todo.description && (
-                  <p
-                    className={cn(
-                      "text-xs text-muted-foreground mt-1",
-                      isDone && "line-through",
-                    )}
-                  >
-                    {todo.description}
-                  </p>
-                )}
-                {/* <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
+                    <Card
+                        className={cn(
+                            "border-l-4 transition-all",
+                            priorityColor,
+                            snapshot.isDragging && "shadow-lg",
+                            isDone && "opacity-60",
+                        )}
+                    >
+                        <CardContent className="p-3 flex items-center justify-between">
+                            <div className="flex-1">
+                                <h4
+                                    className={cn(
+                                        "font-medium text-sm",
+                                        isDone && "line-through text-gray-500",
+                                    )}
+                                >
+                                    {todo.title}
+                                </h4>
+                                {todo.description && (
+                                    <p
+                                        className={cn(
+                                            "text-xs text-muted-foreground mt-1",
+                                            isDone && "line-through",
+                                        )}
+                                    >
+                                        {todo.description}
+                                    </p>
+                                )}
+                                {/* <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
                   <Clock className="w-3 h-3" />
                   <span>
                     {todo.required_time}{" "}
                     {blockUnit + (todo.required_time > 1 ? "s" : "")}
                   </span>
                 </div> */}
-              </div>
-              <button
-                onClick={handleToggleDone}
-                disabled={isBlockLoading(block.id)}
-                className={cn(
-                  "w-6 h-6 rounded-full border flex items-center justify-center",
-                  isDone
-                    ? "bg-plansync-purple-600 border-plansync-purple-600 text-white"
-                    : "border-gray-300 hover:border-plansync-purple-600 hover:bg-plansync-purple-50",
-                  isBlockLoading(block.id) && "opacity-50 cursor-not-allowed",
-                )}
-              >
-                {isBlockLoading(block.id) ? (
-                  <Loader2 className="w-3 h-3 animate-spin" />
-                ) : (
-                  isDone && <Check className="w-4 h-4" />
-                )}
-              </button>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-    </Draggable>
-  );
+                            </div>
+                            <button
+                                onClick={handleToggleDone}
+                                disabled={isBlockLoading(block.id)}
+                                className={cn(
+                                    "w-6 h-6 rounded-full border flex items-center justify-center",
+                                    isDone
+                                        ? "bg-Fluiva-purple-600 border-Fluiva-purple-600 text-white"
+                                        : "border-gray-300 hover:border-Fluiva-purple-600 hover:bg-Fluiva-purple-50",
+                                    isBlockLoading(block.id) &&
+                                        "opacity-50 cursor-not-allowed",
+                                )}
+                            >
+                                {isBlockLoading(block.id) ? (
+                                    <Loader2 className="w-3 h-3 animate-spin" />
+                                ) : (
+                                    isDone && <Check className="w-4 h-4" />
+                                )}
+                            </button>
+                        </CardContent>
+                    </Card>
+                </div>
+            )}
+        </Draggable>
+    );
 };
 
 export default DraggableBlock;

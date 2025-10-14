@@ -25,28 +25,28 @@ export default function PlansList() {
     });
 
     if (isLoading) {
-        return (
-            <Loading />
-        );
+        return <Loading />;
     }
 
-    return <>
-        <div className="flex items-center justify-between">
-            <div>
-                <h1 className="text-2xl font-bold text-plansync-purple-900 font-lilita-one">
-                    My Plans
-                </h1>
-                <p className="text-muted-foreground">
-                    View and manage all your productivity plans
-                </p>
+    return (
+        <>
+            <div className="flex items-center justify-between">
+                <div>
+                    <h1 className="text-2xl font-bold text-Fluiva-purple-900 font-lilita-one">
+                        My Plans
+                    </h1>
+                    <p className="text-muted-foreground">
+                        View and manage all your productivity plans
+                    </p>
+                </div>
+                <Link to="/plans/new">
+                    <Button className="gradient-bg">
+                        New Plan <ArrowRightCircle className="w-4 h-4" />
+                    </Button>
+                </Link>
             </div>
-            <Link to="/plans/new">
-                <Button className="gradient-bg">New Plan <ArrowRightCircle className="w-4 h-4" /></Button>
-            </Link>
-        </div>
 
-        {
-            error ? (
+            {error ? (
                 <PlansLoadError />
             ) : plans?.length === 0 ? (
                 <CreateFirstPlan />
@@ -57,7 +57,7 @@ export default function PlansList() {
                     ))}
                     <NewPlanCard />
                 </div>
-            )
-        }
-    </>
+            )}
+        </>
+    );
 }

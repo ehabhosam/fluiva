@@ -4,18 +4,16 @@ import OverwhelmedPopCard from "@/components/OverwhelmOrganizer/OverwhelmedPopCa
 import PlansList from "@/components/OverwhelmOrganizer/Plan/PlansList";
 
 const Home = () => {
-
-
-  return (
-    <AuthGuard>
-      <Layout>
-        <div className="space-y-6">
-          <OverwhelmedPopCard />
-          <PlansList />
-        </div>
-      </Layout>
-    </AuthGuard>
-  );
+    return (
+        <AuthGuard>
+            <Layout>
+                <div className="space-y-6">
+                    <OverwhelmedPopCard />
+                    <PlansList />
+                </div>
+            </Layout>
+        </AuthGuard>
+    );
 };
 
 export default Home;

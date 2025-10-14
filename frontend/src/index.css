@@ -82,11 +82,11 @@
 
 @layer components {
     .gradient-bg {
-        @apply bg-gradient-to-br from-plansync-purple-600 to-plansync-purple-800;
+        @apply bg-gradient-to-br;
     }
 
     .gradient-bg-teal {
-        @apply bg-gradient-to-br from-plansync-teal-500 to-plansync-teal-700;
+        @apply bg-gradient-to-br;
     }
 
     .card-hover {

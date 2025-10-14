@@ -1,10 +1,10 @@
-# PlanSync Planner Microservice API Documentation
+# Fluiva Planner Microservice API Documentation
 
-This document outlines the gRPC API provided by the PlanSync Planner Microservice, which is responsible for generating optimized time schedules based on tasks and routines.
+This document outlines the gRPC API provided by the Fluiva Planner Microservice, which is responsible for generating optimized time schedules based on tasks and routines.
 
 ## Overview
 
-The Planner Microservice is a Go-based gRPC service that handles complex scheduling algorithms for PlanSync. It receives information about tasks and routines, along with scheduling constraints, and returns an optimized schedule arranged in periods and blocks.
+The Planner Microservice is a Go-based gRPC service that handles complex scheduling algorithms for Fluiva. It receives information about tasks and routines, along with scheduling constraints, and returns an optimized schedule arranged in periods and blocks.
 
 ## Service Definition
 

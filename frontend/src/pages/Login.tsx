@@ -17,7 +17,7 @@ const Login = () => {
             (event, session) => {
                 if (event === "SIGNED_IN" && session) {
                     toast({
-                        title: "Welcome to PlanSync!",
+                        title: "Welcome to Fluiva!",
                         description: "You have successfully in!",
                     });
                     navigate("/");
@@ -60,11 +60,11 @@ const Login = () => {
                                 src="/assets/logo.png"
                                 width="100%"
                                 height="100%"
-                                alt="PlanSync Logo"
+                                alt="Fluiva Logo"
                             />
                         </div>
                         <h2 className="text-4xl font-bold text-neutral-700 tracking-tight drop-shadow-lg">
-                            PlanSync
+                            Fluiva
                         </h2>
                         <p className="mt-3 text-indigo-600 drop-shadow">
                             Organize Your Future, Effortlessly.
@@ -74,7 +74,7 @@ const Login = () => {
                     {/* Login Content */}
                     <div className="space-y-6">
                         <h3 className="text-sm font-medium text-center text-neutral-600">
-                            Join PlanSync to start Planning!
+                            Join Fluiva to start Planning!
                         </h3>
 
                         <LoginWithGoogleButton
@@ -86,7 +86,7 @@ const Login = () => {
                     {/* Terms */}
                     <div className="text-center text-[0.45rem] lg:text-[0.6rem] text-neutral-800/70">
                         <p>
-                            By signing in, you agree to PlanSync's Terms of
+                            By signing in, you agree to Fluiva's Terms of
                             Service and Privacy Policy.
                         </p>
                     </div>

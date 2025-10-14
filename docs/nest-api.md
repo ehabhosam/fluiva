@@ -1,10 +1,10 @@
-# PlanSync API Documentation
+# Fluiva API Documentation
 
-This document outlines the endpoints available in the PlanSync API for managing plans, todos, periods, and blocks.
+This document outlines the endpoints available in the Fluiva API for managing plans, todos, periods, and blocks.
 
 ## Base URL
 
-All endpoints are relative to the base URL of your server, e.g., `https://api.plansync.com` or `http://localhost:3000`.
+All endpoints are relative to the base URL of your server, e.g., `https://api.Fluiva.com` or `http://localhost:3000`.
 
 ## Authentication
 
@@ -566,4 +566,4 @@ Creates a new user record or updates an existing one based on the authenticated 
 }
 ```
 
-This API documentation provides the necessary information for frontend applications to effectively interact with the PlanSync backend services.
+This API documentation provides the necessary information for frontend applications to effectively interact with the Fluiva backend services.
