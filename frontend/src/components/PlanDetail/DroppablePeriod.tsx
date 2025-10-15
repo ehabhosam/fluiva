@@ -23,8 +23,6 @@ const DroppablePeriod: React.FC<DroppablePeriodProps> = ({
     blockUnit,
     periodUnit,
 }) => {
-    const [isExpanded, setIsExpanded] = useState(true);
-
     const totalTime = period.blocks.length;
     const completedBlocks =
         period.blocks?.filter((block) => block.done_at !== null).length || 0;
@@ -40,53 +38,9 @@ const DroppablePeriod: React.FC<DroppablePeriodProps> = ({
                     {...provided.draggableProps}
                     className="mb-4"
                 >
-                    <Card className="overflow-hidden">
-                        <CardHeader
-                            {...provided.dragHandleProps}
-                            className="p-4 bg-gray-50 cursor-grab flex flex-row items-center justify-between"
-                        >
-                            <div className="flex items-center gap-3">
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-6 w-6 p-0"
-                                    onClick={() => setIsExpanded(!isExpanded)}
-                                >
-                                    {isExpanded ? (
-                                        <ChevronDown className="h-4 w-4" />
-                                    ) : (
-                                        <ChevronRight className="h-4 w-4" />
-                                    )}
-                                </Button>
-                                <div>
-                                    <h3 className="font-medium text-sm capitalize font-lilita-one">
-                                        {periodUnit} {period.index + 1}
-                                    </h3>
-                                    <div className="text-xs text-muted-foreground flex items-center gap-1">
-                                        <Clock className="w-3 h-3" />
-                                        <span>
-                                            {totalTime} {blockUnit}
-                                        </span>
-                                        <span className="mx-1">•</span>
-                                        <span>
-                                            {completedBlocks}/{totalBlocks}{" "}
-                                            {blockUnit}s completed
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Progress bar */}
-                            <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
-                                <div
-                                    className="h-full bg-Fluiva-purple-600"
-                                    style={{ width: `${progressPercentage}%` }}
-                                ></div>
-                            </div>
-                        </CardHeader>
-
-                        <div className={cn(!isExpanded && "hidden")}>
-                            <CardContent className="p-3">
+                    <Card className="overflow-hidden m-3">
+                        <div>
+                            <CardContent className="p-0">
                                 <Droppable
                                     droppableId={`period-${period.id}`}
                                     type="BLOCK"
@@ -133,9 +87,6 @@ const DroppablePeriod: React.FC<DroppablePeriodProps> = ({
                                                                 }
                                                                 onMarkDone={
                                                                     onMarkBlockDone
-                                                                }
-                                                                blockUnit={
-                                                                    blockUnit
                                                                 }
                                                             />
                                                         ),

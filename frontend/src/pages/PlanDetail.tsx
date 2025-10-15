@@ -1,5 +1,5 @@
 import { planApi } from "@/api/plan";
-import { BlockReorder, PeriodReorder, PlanType } from "@/api/types";
+import { BlockReorder, Period, PeriodReorder, PlanType } from "@/api/types";
 import AuthGuard from "@/components/AuthGuard";
 import { Layout } from "@/components/Layout";
 import Loading from "@/components/Loading";
@@ -185,6 +185,17 @@ const PlanDetail = () => {
         );
     }
 
+    if (error) {
+        return (
+            <Layout>
+                <div className="space-y-6">
+                    <h3>Error Loading Plan.</h3>
+                    <p className="text-gray-500">Please try again later.</p>
+                </div>
+            </Layout>
+        );
+    }
+
     if (!plan) {
         return (
             <Layout>
@@ -206,6 +217,19 @@ const PlanDetail = () => {
         periodUnit = "month";
         blockUnit = "week";
     }
+
+    let period = plan.periods.find((period) => period.id === activePeriod);
+
+    if (!period) {
+        period = plan.periods[0];
+    }
+
+    const totalTime = period.blocks.length;
+    const completedBlocks =
+        period.blocks?.filter((block) => block.done_at !== null).length || 0;
+    const totalBlocks = period.blocks?.length || 0;
+    const progressPercentage =
+        totalBlocks > 0 ? (completedBlocks / totalBlocks) * 100 : 0;
 
     return (
         <AuthGuard>
@@ -255,8 +279,8 @@ const PlanDetail = () => {
                         </Button>
                     </div>
 
-                    {/* Periods Tabs */}
-                    <div className="mb-8">
+                    <div className="lg:flex gap-5">
+                        {/* Periods Tabs */}
                         <PeriodsTabs
                             activePeriod={activePeriod}
                             plan={plan}
@@ -265,58 +289,30 @@ const PlanDetail = () => {
                             }
                             periodUnit={periodUnit}
                         />
-                    </div>
 
-                    {/* Periods and Blocks */}
-                    <Card>
-                        <CardHeader className="pb-3">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <CardTitle className="capitalize font-lilita-one">
-                                        Plan {periodUnit}s Content
-                                    </CardTitle>
-                                    <CardDescription className="mt-2">
-                                        Drag and drop to reorder {periodUnit}s
-                                        and {blockUnit}s
-                                    </CardDescription>
+                        {/* Periods and Blocks */}
+                        <Card className="flex-1 rounded-3xl px-5 w-full h-fit">
+                            <CardHeader className="p-4 flex flex-row items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div>
+                                        <h3 className="font-medium text-lg capitalize font-lilita-one">
+                                            {periodUnit} {period.index + 1}
+                                        </h3>
+                                        <div className="text-xs text-muted-foreground flex items-center gap-1">
+                                            <Clock className="w-3 h-3" />
+                                            <span>
+                                                {totalTime} {blockUnit}
+                                            </span>
+                                            <span className="mx-1">•</span>
+                                            <span>
+                                                {completedBlocks}/{totalBlocks}{" "}
+                                                {blockUnit}s completed
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
-                                {activePeriod && (
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => setActivePeriod(null)}
-                                        className={cn(
-                                            "text-xs capitalize",
-                                            activePeriod === null && "hidden",
-                                        )}
-                                    >
-                                        View All {periodUnit}s
-                                    </Button>
-                                )}
-                            </div>
-                        </CardHeader>
-                        <CardContent>
-                            {isLoading ? (
-                                <div className="animate-pulse space-y-4">
-                                    {[1, 2, 3].map((i) => (
-                                        <div
-                                            key={i}
-                                            className="h-20 bg-gray-100 rounded-md"
-                                        ></div>
-                                    ))}
-                                </div>
-                            ) : error ? (
-                                <div className="text-center py-10">
-                                    <p className="text-red-500 mb-3">
-                                        Error loading plan details
-                                    </p>
-                                    <Button
-                                        onClick={() => window.location.reload()}
-                                    >
-                                        Try Again
-                                    </Button>
-                                </div>
-                            ) : (
+                            </CardHeader>
+                            <CardContent className="px-0">
                                 <DragDropContext onDragEnd={handleDragEnd}>
                                     <Droppable
                                         droppableId="periods"
@@ -329,38 +325,24 @@ const PlanDetail = () => {
                                                 ref={provided.innerRef}
                                                 className="space-y-4"
                                             >
-                                                {plan.periods
-                                                    ?.filter(
-                                                        (period) =>
-                                                            activePeriod ===
-                                                                null ||
-                                                            period.id ===
-                                                                activePeriod,
-                                                    )
-                                                    .map((period, index) => (
-                                                        <DroppablePeriod
-                                                            key={period.id}
-                                                            period={period}
-                                                            index={index}
-                                                            onMarkBlockDone={
-                                                                handleMarkBlockDone
-                                                            }
-                                                            blockUnit={
-                                                                blockUnit
-                                                            }
-                                                            periodUnit={
-                                                                periodUnit
-                                                            }
-                                                        />
-                                                    ))}
+                                                <DroppablePeriod
+                                                    key={period.id}
+                                                    period={period}
+                                                    index={0}
+                                                    onMarkBlockDone={
+                                                        handleMarkBlockDone
+                                                    }
+                                                    blockUnit={blockUnit}
+                                                    periodUnit={periodUnit}
+                                                />
                                                 {provided.placeholder}
                                             </div>
                                         )}
                                     </Droppable>
                                 </DragDropContext>
-                            )}
-                        </CardContent>
-                    </Card>
+                            </CardContent>
+                        </Card>
+                    </div>
                 </div>
             </Layout>
         </AuthGuard>
