@@ -1,23 +1,23 @@
 import { planApi } from "@/api/plan";
-import { BlockReorder, Period, PeriodReorder, PlanType } from "@/api/types";
+import {
+    BlockReorder,
+    PeriodReorder,
+    PlanDetail as PlanDetailType,
+    PlanType,
+} from "@/api/types";
 import AuthGuard from "@/components/AuthGuard";
 import { Layout } from "@/components/Layout";
 import Loading from "@/components/Loading";
 import DroppablePeriod from "@/components/PlanDetail/DroppablePeriod";
+import { ExportToCalendarPopup } from "@/components/PlanDetail/ExportToCalendarPopup";
 import PeriodsTabs from "@/components/PlanDetail/PeriodsTabs";
 import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils";
+import { aggregatePlan, formatToCsv } from "@/lib/export";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { format, parseISO } from "date-fns";
-import { ArrowLeft, Calendar, Clock, Edit } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, Download, Edit } from "lucide-react";
 import { useEffect, useState } from "react";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import { Link, useParams } from "react-router-dom";
@@ -26,6 +26,9 @@ const PlanDetail = () => {
     const { id } = useParams<{ id: string }>();
     const queryClient = useQueryClient();
     const [activePeriod, setActivePeriod] = useState<number | null>(null);
+    const [isExportPopupOpen, setIsExportPopupOpen] = useState(false);
+    const [isProcessingCsv, setIsProcessingCsv] = useState(false);
+    const [csvData, setCsvData] = useState<(string | number)[][] | null>(null);
 
     // Fetch plan details
     const {
@@ -177,6 +180,39 @@ const PlanDetail = () => {
         });
     };
 
+    const handleExport = () => {
+        setIsExportPopupOpen(true);
+    };
+
+    const handleGenerateCsv = (startDate: Date, startHour: number) => {
+        if (!plan) return;
+
+        setIsProcessingCsv(true);
+        setTimeout(() => {
+            try {
+                const aggregated = aggregatePlan(plan as PlanDetailType);
+                const csv = formatToCsv(
+                    aggregated,
+                    startDate,
+                    startHour,
+                    plan.type,
+                );
+                setCsvData(csv);
+            } catch (error) {
+                console.error("Error generating CSV:", error);
+                toast({
+                    title: "Error Generating CSV",
+                    description:
+                        "Could not generate the file. Please try again.",
+                    variant: "destructive",
+                });
+                setIsExportPopupOpen(false); // Close on error
+            } finally {
+                setIsProcessingCsv(false);
+            }
+        }, 50);
+    };
+
     if (isLoading) {
         return (
             <Layout>
@@ -228,8 +264,6 @@ const PlanDetail = () => {
     const completedBlocks =
         period.blocks?.filter((block) => block.done_at !== null).length || 0;
     const totalBlocks = period.blocks?.length || 0;
-    const progressPercentage =
-        totalBlocks > 0 ? (completedBlocks / totalBlocks) * 100 : 0;
 
     return (
         <AuthGuard>
@@ -269,14 +303,24 @@ const PlanDetail = () => {
                                 </p>
                             )}
                         </div>
-                        <Button
-                            variant="outline"
-                            className="flex gap-2 items-center"
-                            onClick={handleEditPlan}
-                        >
-                            <Edit className="w-4 h-4" />
-                            <span>Edit Plan</span>
-                        </Button>
+                        <div className="flex gap-2">
+                            <Button
+                                variant="outline"
+                                className="flex gap-2 items-center"
+                                onClick={handleExport}
+                            >
+                                <Download className="w-4 h-4" />
+                                <span>Export</span>
+                            </Button>
+                            <Button
+                                variant="outline"
+                                className="flex gap-2 items-center"
+                                onClick={handleEditPlan}
+                            >
+                                <Edit className="w-4 h-4" />
+                                <span>Edit Plan</span>
+                            </Button>
+                        </div>
                     </div>
 
                     <div className="lg:flex gap-5">
@@ -344,6 +388,15 @@ const PlanDetail = () => {
                         </Card>
                     </div>
                 </div>
+                <ExportToCalendarPopup
+                    open={isExportPopupOpen}
+                    onOpenChange={setIsExportPopupOpen}
+                    onSubmit={handleGenerateCsv}
+                    isProcessing={isProcessingCsv}
+                    csvData={csvData}
+                    planTitle={plan?.title || ""}
+                    onClearCsvData={() => setCsvData(null)}
+                />
             </Layout>
         </AuthGuard>
     );
