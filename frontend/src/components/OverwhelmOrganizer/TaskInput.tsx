@@ -50,12 +50,12 @@ const TaskInput = forwardRef<HTMLDivElement, TaskInputProps>(
         return (
             <motion.div
                 ref={ref}
-                className="fixed bottom-16 md:bottom-10 left-0 right-0 mx-auto w-full max-w-lg px-4 z-50"
+                className="fixed bottom-5 md:bottom-10 left-0 right-0 mx-auto w-full max-w-lg px-4 z-50"
                 initial={{ y: 100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ type: "spring", bounce: 0.4 }}
             >
-                <Card className="shadow-lg border-2 border-Fluiva-purple-200 floating-card">
+                <Card className="shadow-lg border-2 border-Fluiva-purple-200 floating-card rounded-3xl">
                     <CardContent className="p-4">
                         <div className="flex flex-col sm:flex-row gap-2">
                             <div className="flex-1">

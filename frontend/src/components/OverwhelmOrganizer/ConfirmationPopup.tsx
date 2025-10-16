@@ -79,7 +79,7 @@ const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
                         >
                             Yes, finish today!
                             <span className="text-xs opacity-80 ml-2">
-                                (1 day, {totalHours} blocks)
+                                (1 day, {totalHours} hours)
                             </span>
                         </Button>
 
@@ -90,9 +90,6 @@ const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
                             size="lg"
                         >
                             No, let me customize
-                            <span className="text-xs opacity-60 ml-2">
-                                (set time constraints)
-                            </span>
                         </Button>
                     </div>
 

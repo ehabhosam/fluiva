@@ -16,6 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 import { CircleCheck, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import ControlledCounter from "../NewPlanForm/ControlledCounter";
+import CounterContainer from "../NewPlanForm/CounterContainer";
 
 interface TimeConstraintsPopupProps {
     isOpen: boolean;
@@ -73,7 +74,7 @@ const TimeConstraintsPopup: React.FC<TimeConstraintsPopupProps> = ({
                 constraints.least_blocks,
             );
         }
-    }, [constraints, setInitialConstraints]);
+    }, [constraints]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -121,89 +122,28 @@ const TimeConstraintsPopup: React.FC<TimeConstraintsPopupProps> = ({
                         </Card>
                     ) : constraints ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <Card>
-                                <CardContent className="p-6 space-y-4">
-                                    <div className="flex items-center justify-between">
-                                        <h4 className="text-lg font-medium">
-                                            Blocks
-                                        </h4>
-                                        <div className="inline-flex items-center rounded-full bg-Fluiva-purple-100 px-3 py-1 text-sm font-medium text-Fluiva-purple-800">
-                                            {constraints.least_blocks} -{" "}
-                                            {constraints.max_blocks}
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <Label htmlFor="n-blocks">
-                                            Number of Blocks
-                                        </Label>
-                                        <ControlledCounter
-                                            count={nBlocks}
-                                            increment={incrementBlocks}
-                                            decrement={decrementBlocks}
-                                            min={constraints.least_blocks}
-                                            max={constraints.max_blocks}
-                                        />
-                                        {errors.nBlocks && (
-                                            <p className="text-sm text-red-500">
-                                                {errors.nBlocks}
-                                            </p>
-                                        )}
-                                    </div>
-                                </CardContent>
-                            </Card>
-
-                            <Card>
-                                <CardContent className="p-6 space-y-4">
-                                    <div className="flex items-center justify-between">
-                                        <h4 className="text-lg font-medium">
-                                            Periods
-                                        </h4>
-                                        <div className="inline-flex items-center rounded-full bg-Fluiva-teal-100 px-3 py-1 text-sm font-medium text-Fluiva-teal-800">
-                                            {constraints.least_periods} -{" "}
-                                            {constraints.max_periods}
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <Label htmlFor="n-periods">
-                                            Number of Periods
-                                        </Label>
-                                        <ControlledCounter
-                                            count={nPeriods}
-                                            increment={incrementPeriods}
-                                            decrement={decrementPeriods}
-                                            min={constraints.least_periods}
-                                            max={constraints.max_periods}
-                                        />
-                                        {errors.nPeriods && (
-                                            <p className="text-sm text-red-500">
-                                                {errors.nPeriods}
-                                            </p>
-                                        )}
-                                    </div>
-                                </CardContent>
-                            </Card>
+                            <CounterContainer
+                                count={nBlocks}
+                                increment={incrementBlocks}
+                                decrement={decrementBlocks}
+                                min={constraints.least_blocks}
+                                max={constraints.max_blocks}
+                                name="hours"
+                                label="Number of hours per day"
+                                error=""
+                            />
+                            <CounterContainer
+                                count={nPeriods}
+                                increment={incrementPeriods}
+                                decrement={decrementPeriods}
+                                min={constraints.least_periods}
+                                max={constraints.max_periods}
+                                name="days"
+                                label="Number of days"
+                                error=""
+                            />
                         </div>
                     ) : null}
-
-                    <div className="space-y-6 bg-gray-50 rounded-lg p-6">
-                        <div className="flex items-start gap-3">
-                            <div className="text-Fluiva-purple-600">
-                                <CircleCheck className="w-5 h-5" />
-                            </div>
-                            <div>
-                                <h4 className="font-medium">
-                                    Ready to Organize!
-                                </h4>
-                                <p className="text-muted-foreground text-sm">
-                                    We'll create your "Overwhelm Handled" daily
-                                    plan with the time constraints you've
-                                    specified.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
 
                     <div className="flex justify-between">
                         <Button
@@ -215,10 +155,11 @@ const TimeConstraintsPopup: React.FC<TimeConstraintsPopupProps> = ({
                         </Button>
                         <Button
                             type="submit"
-                            className="gradient-bg"
+                            variant="generate"
+                            className="gradient-bg font-bold md:text-md"
                             disabled={isLoading || !constraints}
                         >
-                            Create Plan
+                            Create Plan!
                         </Button>
                     </div>
                 </form>

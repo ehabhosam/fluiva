@@ -55,6 +55,10 @@ export default {
                     "linear-gradient(90deg, #14B8A6 0%, #10B981 100%)",
                 "overwhelm-banner":
                     "linear-gradient(90deg, #60A5FA 0%, #A78BFA 100%)",
+                "button-generate":
+                    "linear-gradient(90deg, #F97316 0%, #A78BFA 50%, #60A5FA 100%)",
+                "button-generate-hover":
+                    "linear-gradient(90deg, #EA580C 0%, #8B5CF6 50%, #3B82F6 100%)",
             },
             colors: {
                 border: "hsl(var(--border))",

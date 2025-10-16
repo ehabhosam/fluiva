@@ -33,32 +33,25 @@ const OverwhelmOrganizer: React.FC = () => {
     };
 
     return (
-        <Layout>
+        <Layout footer={false}>
             <div className="space-y-4">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-2xl font-bold text-Fluiva-purple-900 font-lilita-one">
+                        <h1 className="text-2xl font-bold font-lilita-one bg-button-primary bg-clip-text text-transparent">
                             Overwhelm Organizer
                         </h1>
-                        <p className="text-muted-foreground">
-                            Visualize all your tasks and organize your overwhelm
+                        <p className="text-muted-foreground max-md:text-sm">
+                            Visualize all your tasks to organize them.
                         </p>
                     </div>
                     {tasks.length > 0 && (
                         <div className="flex gap-5">
-                            <button
+                            <Button
+                                variant="outline"
                                 onClick={clearTasks}
-                                className="text-sm px-3 py-1 border border-red-300 text-red-500 rounded-md hover:bg-red-50 transition-colors"
+                                className="text-sm px-3 py-1 border border-red-300 text-red-500 hover:text-red-600 hover:bg-red-50 transition-colors"
                             >
                                 Clear All
-                            </button>
-                            <Button
-                                onClick={overwhelmFlow.handleHandleTheMess}
-                                disabled={overwhelmFlow.isCreatingPlan}
-                            >
-                                {overwhelmFlow.isCreatingPlan
-                                    ? "Creating Plan..."
-                                    : "Handle The Mess!"}
                             </Button>
                         </div>
                     )}
@@ -66,7 +59,7 @@ const OverwhelmOrganizer: React.FC = () => {
 
                 <div
                     ref={containerRef}
-                    className={`relative w-full !h-[70vh] bg-white/70 border-2 border-dashed border-gray-200 rounded-lg overflow-hidden`}
+                    className={`relative w-full !h-[70vh] bg-white/70 border-2 border-dashed border-gray-200 rounded-[2rem] overflow-hidden`}
                 >
                     {/* Tasks */}
                     {tasks.map((task) => (
@@ -101,6 +94,18 @@ const OverwhelmOrganizer: React.FC = () => {
                             </p>
                         </div>
                     )}
+                    <Button
+                        onClick={overwhelmFlow.handleHandleTheMess}
+                        disabled={
+                            overwhelmFlow.isCreatingPlan || tasks.length === 0
+                        }
+                        className="absolute right-5 max-md:top-5 bottom-10 md:right-10 z-50"
+                        // variant="p"
+                    >
+                        {overwhelmFlow.isCreatingPlan
+                            ? "Creating Plan..."
+                            : "Organize !"}
+                    </Button>
                 </div>
 
                 {/* Spacer */}

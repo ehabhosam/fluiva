@@ -7,11 +7,10 @@ export const TASK_CARD = {
 
 // Task colors for random assignment
 export const TASK_COLORS = [
-    "bg-Fluiva-purple-100 border-Fluiva-purple-500 text-Fluiva-purple-800",
-    "bg-Fluiva-teal-100 border-Fluiva-teal-500 text-Fluiva-teal-800",
-    "bg-blue-100 border-blue-500 text-blue-800",
-    "bg-amber-100 border-amber-500 text-amber-800",
-    "bg-rose-100 border-rose-500 text-rose-800",
+    "bg-button-primary border-purple-500 text-white",
+    "bg-button-secondary border-amber-500 text-white",
+    "bg-button-next border-blue-500 text-white",
+    "bg-button-accent border-teal-500 text-white",
 ] as const;
 
 // Animation and interaction settings

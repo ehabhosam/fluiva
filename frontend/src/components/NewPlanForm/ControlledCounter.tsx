@@ -9,15 +9,13 @@ type ControlledCounterProps = {
 };
 
 export default function ControlledCounter(props: ControlledCounterProps) {
-    console.log("displaying controlled counter", props.count);
-
     const min = props.min ?? 0;
     const max = props.max ?? Infinity;
 
     return (
         <div className="flex gap-3 items-center">
             <button
-                className="flex items-center justify-center w-10 h-10 rounded-full bg-Fluiva-orange text-white cursor-pointer z-10"
+                className="flex flex-shrink-0 items-center justify-center w-10 h-10 rounded-full bg-Fluiva-orange text-white cursor-pointer z-10"
                 onClick={props.increment}
                 disabled={props.count >= max}
                 type="button"
@@ -26,7 +24,7 @@ export default function ControlledCounter(props: ControlledCounterProps) {
             </button>
             <span className="mx-2 text-lg font-semibold">{props.count}</span>
             <button
-                className="flex items-center justify-center w-10 h-10 rounded-full bg-Fluiva-orange text-white"
+                className="flex flex-shrink-0 items-center justify-center w-10 h-10 rounded-full bg-Fluiva-orange text-white"
                 onClick={props.decrement}
                 disabled={props.count <= min}
                 type="button"
