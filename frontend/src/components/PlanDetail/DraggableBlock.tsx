@@ -13,10 +13,10 @@ interface DraggableBlockProps {
 }
 
 const BlockPriorityColor: Record<string, string> = {
-    HIGH: "border-transparent bg-gradient-to-br from-orange-200 to-pink-300 text-white",
-    NORMAL: "border-transparent bg-gradient-to-br from-blue-200 to-blue-400 text-white",
-    LOW: "border-transparent bg-gradient-to-br from-blue-100 to-purple-200 text-gray-800",
-    NULL: "border-transparent bg-gradient-to-br from-accent to-Fluiva-yellow bg-opacity-50 text-gray-800", // routine
+    HIGH: "bg-card border-2 border-destructive/20 shadow-sm hover:shadow-md",
+    NORMAL: "bg-card border-2 border-Fluiva-purple/20 shadow-sm hover:shadow-md",
+    LOW: "bg-card border-2 border-muted shadow-sm hover:shadow-md",
+    NULL: "bg-card border-2 border-accent/30 shadow-sm hover:shadow-md", // routine
 };
 
 export const getDoneStatus = (block: Block): boolean => {
@@ -67,19 +67,20 @@ const DraggableBlock: React.FC<DraggableBlockProps> = ({
                 >
                     <Card
                         className={cn(
-                            "transition-all rounded-2xl animate-fade-in border-none",
+                            "transition-all duration-200 animate-fade-in rounded-2xl",
                             priorityColor,
-                            snapshot.isDragging && "shadow-lg",
-                            isDone && "opacity-60",
+                            snapshot.isDragging &&
+                                "shadow-lg ring-2 ring-primary/20",
+                            isDone && "opacity-60 bg-muted/50",
                         )}
                     >
-                        <CardContent className="p-3 flex items-center justify-between">
+                        <CardContent className="p-4 flex items-center justify-between">
                             <div className="flex-1">
                                 <h4
                                     className={cn(
-                                        "font-primary font-medium text-sm text-Fluiva-foreground",
+                                        "font-primary font-medium text-sm text-foreground",
                                         isDone &&
-                                            "line-through text-Fluiva-muted-foreground",
+                                            "line-through text-muted-foreground",
                                     )}
                                 >
                                     {todo.title}
@@ -87,7 +88,7 @@ const DraggableBlock: React.FC<DraggableBlockProps> = ({
                                 {todo.description && (
                                     <p
                                         className={cn(
-                                            "text-xs text-Fluiva-muted-foreground mt-1",
+                                            "text-xs text-muted-foreground mt-1",
                                             isDone && "line-through",
                                         )}
                                     >
@@ -106,10 +107,10 @@ const DraggableBlock: React.FC<DraggableBlockProps> = ({
                                 onClick={handleToggleDone}
                                 disabled={isBlockLoading(block.id)}
                                 className={cn(
-                                    "w-6 h-6 rounded-full border flex items-center justify-center transition-all",
+                                    "w-6 h-6 rounded-full border flex items-center justify-center transition-all duration-200",
                                     isDone
-                                        ? "bg-Fluiva-purple border-Fluiva-purple text-white"
-                                        : "border-gray-300 hover:border-Fluiva-purple hover:bg-gradient-to-r hover:from-Fluiva-purple hover:to-Fluiva-blue hover:text-white",
+                                        ? "bg-button-primary border-button-primary text-white"
+                                        : "border-muted-foreground/30 hover:border-button-primary hover:bg-primary hover:text-primary-foreground",
                                     isBlockLoading(block.id) &&
                                         "opacity-50 cursor-not-allowed",
                                 )}

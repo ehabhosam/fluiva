@@ -38,7 +38,7 @@ const DroppablePeriod: React.FC<DroppablePeriodProps> = ({
                     {...provided.draggableProps}
                     className="mb-4"
                 >
-                    <Card className="overflow-hidden m-3">
+                    <Card className="overflow-hidden m-3 rounded-2xl">
                         <div>
                             <CardContent className="p-0">
                                 <Droppable
@@ -53,7 +53,7 @@ const DroppablePeriod: React.FC<DroppablePeriodProps> = ({
                                         >
                                             <GridBackground />
                                             <div>
-                                                <ul className="capitalize font-lilita-one text-sm opacity-50 h-full flex flex-col justify-between text-Fluiva-purple-950">
+                                                <ul className="capitalize font-lilita-one text-xs lg:text-sm h-full flex flex-col justify-between text-Fluiva-purple">
                                                     {[
                                                         period.blocks &&
                                                         period.blocks.length > 0
