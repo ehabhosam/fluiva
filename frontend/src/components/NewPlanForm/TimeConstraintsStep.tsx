@@ -6,14 +6,11 @@ import {
     TimeConstraintsRequest,
 } from "@/api/types";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import { Card } from "@/components/ui/card";
 import useTimeConstaints from "@/hooks/use-time-constraints";
 import { getUnitsFromPlanType } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { CircleCheck } from "lucide-react";
 import { useEffect, useState } from "react";
-import ControlledCounter from "./ControlledCounter";
 import CounterContainer from "./CounterContainer";
 
 interface TimeConstraintsStepProps {
@@ -139,7 +136,7 @@ const TimeConstraintsStep: React.FC<TimeConstraintsStepProps> = ({
                 </Button>
                 <Button
                     type="submit"
-                    variant="secondary"
+                    variant="generate"
                     className="font-bold text-base"
                 >
                     Generate Plan !

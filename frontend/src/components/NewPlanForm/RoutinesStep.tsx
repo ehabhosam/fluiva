@@ -12,29 +12,27 @@ interface RoutinesStepProps {
     onBack: () => void;
 }
 
+const createDefaultRoutine = (): RoutineInput => ({
+    title: "",
+    description: "",
+    requiredTime: 30,
+});
+
 const RoutinesStep: React.FC<RoutinesStepProps> = ({
     routines,
     onUpdate,
     onNext,
     onBack,
 }) => {
-    const [newRoutine, setNewRoutine] = useState<RoutineInput>({
-        title: "",
-        description: "",
-        requiredTime: 30,
-    });
+    const [newRoutine, setNewRoutine] = useState<RoutineInput>(
+        createDefaultRoutine(),
+    );
 
     const [errors, setErrors] = useState<{
         title?: string;
         requiredTime?: string;
         items?: string;
     }>({});
-
-    const createDefaultRoutine = (): RoutineInput => ({
-        title: "",
-        description: "",
-        requiredTime: 30,
-    });
 
     const { handleAddItem, handleRemoveItem, handleMoveItem } = useNewItem({
         items: routines,

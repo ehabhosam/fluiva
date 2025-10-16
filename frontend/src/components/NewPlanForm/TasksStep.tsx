@@ -13,32 +13,26 @@ interface TasksStepProps {
     onBack: () => void;
 }
 
+const createDefaultTask = (): TaskInput => ({
+    title: "",
+    description: "",
+    requiredTime: 1,
+    priority: Priority.NORMAL,
+    isBreakable: true,
+});
+
 const TasksStep: React.FC<TasksStepProps> = ({
     tasks,
     onUpdate,
     onNext,
     onBack,
 }) => {
-    const [newTask, setNewTask] = useState<TaskInput>({
-        title: "",
-        description: "",
-        requiredTime: 30,
-        priority: Priority.NORMAL,
-        isBreakable: true,
-    });
+    const [newTask, setNewTask] = useState<TaskInput>(createDefaultTask());
     const [errors, setErrors] = useState<{
         title?: string;
         requiredTime?: string;
         tasks?: string;
     }>({});
-
-    const createDefaultTask = (): TaskInput => ({
-        title: "",
-        description: "",
-        requiredTime: 30,
-        priority: Priority.NORMAL,
-        isBreakable: true,
-    });
 
     const { handleAddItem, handleRemoveItem, handleMoveItem } = useNewItem({
         items: tasks,
