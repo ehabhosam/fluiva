@@ -16,8 +16,28 @@ export function getUnitsFromPlanType(planType: PlanType): [string, string] {
         case PlanType.MONTHLY:
             return ["week", "month"];
     }
+}
 
-    throw new Error(`Unsupported plan type: ${planType}`);
+export function getPeriodsUnitFromPlanType(planType: PlanType): string {
+    switch (planType) {
+        case PlanType.DAILY:
+            return "day";
+        case PlanType.WEEKLY:
+            return "week";
+        case PlanType.MONTHLY:
+            return "month";
+    }
+}
+
+export function getBlockUnitFromPlanType(planType: PlanType): string {
+    switch (planType) {
+        case PlanType.DAILY:
+            return "hour";
+        case PlanType.WEEKLY:
+            return "day";
+        case PlanType.MONTHLY:
+            return "week";
+    }
 }
 
 export function divisor(total: number, value: number) {

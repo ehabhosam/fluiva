@@ -1,6 +1,7 @@
 import { Block, Todo } from "@/api/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { useCompleteBlock } from "@/hooks/use-complete-block";
+import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { Check, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -9,7 +10,6 @@ import { Draggable } from "react-beautiful-dnd";
 interface DraggableBlockProps {
     block: Block;
     index: number;
-    onMarkDone: (blockId: number, isDone: boolean) => void;
 }
 
 const BlockPriorityColor: Record<string, string> = {
@@ -23,11 +23,7 @@ export const getDoneStatus = (block: Block): boolean => {
     return block.done_at !== null;
 };
 
-const DraggableBlock: React.FC<DraggableBlockProps> = ({
-    block,
-    index,
-    onMarkDone,
-}) => {
+const DraggableBlock: React.FC<DraggableBlockProps> = ({ block, index }) => {
     const [isDone, setIsDone] = useState<boolean>(getDoneStatus(block));
     const todo = block.todo as Todo;
     const priorityColor = todo.priority
@@ -50,8 +46,24 @@ const DraggableBlock: React.FC<DraggableBlockProps> = ({
         setIsDone(newStatus);
 
         // Call API and notify parent
-        const updatedBlock = await completeBlock(block, newStatus);
-        onMarkDone(block.id, getDoneStatus(updatedBlock));
+        try {
+            await completeBlock(block, newStatus);
+
+            toast({
+                title: newStatus
+                    ? "Block marked as done"
+                    : "Block marked as not done",
+                description: "Block status has been updated",
+            });
+        } catch (error) {
+            // Revert optimistic update on error
+            setIsDone(isDone);
+            toast({
+                title: "Error",
+                description: "Failed to update block status",
+                variant: "destructive",
+            });
+        }
 
         // If API call failed, UI will be reverted by the effect hook
     };

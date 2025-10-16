@@ -1,11 +1,11 @@
 import { Period, PlanDetail } from "@/api/types";
+import { getPeriodsUnitFromPlanType } from "@/lib/utils";
 import { useMemo } from "react";
 
 interface PeriodsTabsProps {
     plan: PlanDetail;
     onPeriodClick: (periodId: number) => void;
     activePeriod: number | null;
-    periodUnit: string;
 }
 
 interface PeriodData {
@@ -21,8 +21,9 @@ const PeriodsTabs: React.FC<PeriodsTabsProps> = ({
     plan,
     onPeriodClick,
     activePeriod,
-    periodUnit,
 }) => {
+    const periodUnit = getPeriodsUnitFromPlanType(plan.type);
+
     const periodsData: PeriodData[] = useMemo(() => {
         if (!plan.periods) return [];
 

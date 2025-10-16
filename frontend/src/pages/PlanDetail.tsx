@@ -1,217 +1,39 @@
-import { planApi } from "@/api/plan";
-import {
-    BlockReorder,
-    PeriodReorder,
-    PlanDetail as PlanDetailType,
-    PlanType,
-} from "@/api/types";
 import AuthGuard from "@/components/AuthGuard";
 import { Layout } from "@/components/Layout";
 import Loading from "@/components/Loading";
-import DroppablePeriod from "@/components/PlanDetail/DroppablePeriod";
 import { ExportToCalendarPopup } from "@/components/PlanDetail/ExportToCalendarPopup";
+import { useDragHandler } from "@/components/PlanDetail/hooks/use-drag-handler";
+import useExportPlanPopup from "@/components/PlanDetail/hooks/use-export-plan-popup";
+import useExportToCsv from "@/components/PlanDetail/hooks/use-export-to-csv";
+import usePlanDetailsQuery from "@/components/PlanDetail/hooks/use-plan-details-query";
+import PeriodData from "@/components/PlanDetail/PeriodData";
+import PeriodHeader from "@/components/PlanDetail/PeriodHeader";
 import PeriodsTabs from "@/components/PlanDetail/PeriodsTabs";
-import { Button } from "@/components/ui/button";
+import PlanDetailsHeader from "@/components/PlanDetail/PlanDetailsHeader";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { toast } from "@/hooks/use-toast";
-import { aggregatePlan, formatToCsv } from "@/lib/export";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { format, parseISO } from "date-fns";
-import { ArrowLeft, Calendar, Clock, Download, Edit } from "lucide-react";
-import { useEffect, useState } from "react";
-import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
-import { Link, useParams } from "react-router-dom";
+import { useState } from "react";
+import { DragDropContext } from "react-beautiful-dnd";
+import { useParams } from "react-router-dom";
 
 const PlanDetail = () => {
     const { id } = useParams<{ id: string }>();
-    const queryClient = useQueryClient();
     const [activePeriod, setActivePeriod] = useState<number | null>(null);
-    const [isExportPopupOpen, setIsExportPopupOpen] = useState(false);
-    const [isProcessingCsv, setIsProcessingCsv] = useState(false);
-    const [csvData, setCsvData] = useState<(string | number)[][] | null>(null);
 
-    // Fetch plan details
     const {
-        data: plan,
-        isLoading,
-        error,
-    } = useQuery({
-        queryKey: ["plan", id],
-        queryFn: () => planApi.getPlanDetails(Number(id)),
-        enabled: !!id,
-    });
+        isExportPopupOpen,
+        openExportPopup,
+        closeExportPopup,
+        setIsExportPopupOpen,
+    } = useExportPlanPopup();
 
-    // Set active period to first period when plan loads
-    useEffect(() => {
-        if (plan?.periods && plan.periods.length > 0) {
-            setActivePeriod(plan.periods[0].id);
-        }
-    }, [plan?.periods]);
+    const { plan, isLoading, error } = usePlanDetailsQuery(id, setActivePeriod);
 
-    // Mutations for drag and drop operations
-    const reorderPeriodsMutation = useMutation({
-        mutationFn: planApi.reorderPeriods,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["plan", id] });
-            toast({
-                title: "Periods reordered",
-                description: "The order of periods has been updated",
-            });
-        },
-        onError: () => {
-            toast({
-                title: "Error reordering periods",
-                description: "Failed to update period order",
-                variant: "destructive",
-            });
-        },
-    });
-
-    const reorderBlocksMutation = useMutation({
-        mutationFn: planApi.reorderBlocks,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["plan", id] });
-            toast({
-                title: "Blocks reordered",
-                description: "The order of blocks has been updated",
-            });
-        },
-        onError: () => {
-            toast({
-                title: "Error reordering blocks",
-                description: "Failed to update block order",
-                variant: "destructive",
-            });
-        },
-    });
-
-    const moveBlockMutation = useMutation({
-        mutationFn: planApi.moveBlock,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["plan", id] });
-            toast({
-                title: "Block moved",
-                description: "The block has been moved to a new period",
-            });
-        },
-        onError: () => {
-            toast({
-                title: "Error moving block",
-                description: "Failed to move block to new period",
-                variant: "destructive",
-            });
-        },
-    });
-
-    const handleDragEnd = (result: DropResult) => {
-        const { destination, source, draggableId, type } = result;
-
-        // Dropped outside the list or dropped in the same position
-        if (
-            !destination ||
-            (destination.droppableId === source.droppableId &&
-                destination.index === source.index)
-        ) {
-            return;
-        }
-
-        if (type === "PERIOD") {
-            // Handle period reordering
-            const periodId = Number(draggableId.replace("period-", ""));
-            const newIndex = destination.index;
-
-            if (plan) {
-                const reorderRequest: PeriodReorder[] = [
-                    {
-                        periodId,
-                        newIndex,
-                    },
-                ];
-
-                reorderPeriodsMutation.mutate({ periods: reorderRequest });
-            }
-        } else if (type === "BLOCK") {
-            const blockId = Number(draggableId.replace("block-", ""));
-            const sourcePeriodId = Number(
-                source.droppableId.replace("period-", ""),
-            );
-            const destinationPeriodId = Number(
-                destination.droppableId.replace("period-", ""),
-            );
-
-            if (sourcePeriodId === destinationPeriodId) {
-                // Reordering blocks within the same period
-                const reorderRequest: BlockReorder[] = [
-                    {
-                        blockId,
-                        newIndex: destination.index,
-                    },
-                ];
-
-                reorderBlocksMutation.mutate({
-                    periodId: sourcePeriodId,
-                    blocks: reorderRequest,
-                });
-            } else {
-                // Moving block to a different period
-                moveBlockMutation.mutate({
-                    blockId,
-                    targetPeriodId: destinationPeriodId,
-                    targetIndex: destination.index,
-                });
-            }
-        }
-    };
-
-    // Mark block as done/undone
-    const handleMarkBlockDone = (blockId: number, isDone: boolean) => {
-        // In a real implementation, this would call an API endpoint
-        console.log(`Block ${blockId} marked as ${isDone ? "done" : "undone"}`);
-        toast({
-            title: isDone ? "Block marked as done" : "Block marked as not done",
-            description: "Block status has been updated",
+    const { isProcessingCsv, csvData, handleGenerateCsv, setCsvData } =
+        useExportToCsv(plan, () => {
+            closeExportPopup();
         });
-    };
 
-    const handleEditPlan = () => {
-        toast({
-            title: "Edit Plan",
-            description: "to be implemented, entazeroona",
-        });
-    };
-
-    const handleExport = () => {
-        setIsExportPopupOpen(true);
-    };
-
-    const handleGenerateCsv = (startDate: Date, startHour: number) => {
-        if (!plan) return;
-
-        setIsProcessingCsv(true);
-        setTimeout(() => {
-            try {
-                const aggregated = aggregatePlan(plan as PlanDetailType);
-                const csv = formatToCsv(
-                    aggregated,
-                    startDate,
-                    startHour,
-                    plan.type,
-                );
-                setCsvData(csv);
-            } catch (error) {
-                console.error("Error generating CSV:", error);
-                toast({
-                    title: "Error Generating CSV",
-                    description:
-                        "Could not generate the file. Please try again.",
-                    variant: "destructive",
-                });
-                setIsExportPopupOpen(false); // Close on error
-            } finally {
-                setIsProcessingCsv(false);
-            }
-        }, 50);
-    };
+    const { handleDragEnd } = useDragHandler(id, plan);
 
     if (isLoading) {
         return (
@@ -242,87 +64,21 @@ const PlanDetail = () => {
         );
     }
 
-    let periodUnit, blockUnit;
-    if (plan.type === PlanType.DAILY) {
-        periodUnit = "day";
-        blockUnit = "hour";
-    } else if (plan.type === PlanType.WEEKLY) {
-        periodUnit = "week";
-        blockUnit = "day";
-    } else {
-        periodUnit = "month";
-        blockUnit = "week";
-    }
-
-    let period = plan.periods.find((period) => period.id === activePeriod);
-
-    if (!period) {
-        period = plan.periods[0];
-    }
-
-    const totalTime = period.blocks.length;
-    const completedBlocks =
-        period.blocks?.filter((block) => block.done_at !== null).length || 0;
-    const totalBlocks = period.blocks?.length || 0;
+    const period =
+        plan.periods.find((period) => period.id === activePeriod) ||
+        plan.periods[0];
 
     return (
         <AuthGuard>
             <Layout>
                 <div className="space-y-6">
                     {/* Header */}
-                    <div className="flex items-start justify-between">
-                        <div>
-                            <Link
-                                to="/"
-                                className="inline-flex items-center text-muted-foreground hover:text-foreground mb-2"
-                            >
-                                <ArrowLeft className="w-4 h-4 mr-1" />
-                                <span>Back to plans</span>
-                            </Link>
-                            <h1 className="text-2xl font-bold text-Fluiva-purple-900 font-lilita-one capitalize">
-                                {isLoading ? "Loading plan..." : plan.title}
-                            </h1>
-                            <div className="flex items-center gap-4 mt-1">
-                                <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                                    <Calendar className="w-4 h-4" />
-                                    <span>
-                                        {format(
-                                            parseISO(plan.created_at),
-                                            "MMM d, yyyy",
-                                        )}
-                                    </span>
-                                </div>
-                                <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                                    <Clock className="w-4 h-4" />
-                                    <span>{plan.type.toLowerCase()} plan</span>
-                                </div>
-                            </div>
-                            {plan.description && (
-                                <p className="mt-3 text-muted-foreground max-w-2xl">
-                                    {plan.description}
-                                </p>
-                            )}
-                        </div>
-                        <div className="flex gap-2">
-                            <Button
-                                variant="outline"
-                                className="flex gap-2 items-center"
-                                onClick={handleExport}
-                            >
-                                <Download className="w-4 h-4" />
-                                <span>Export</span>
-                            </Button>
-                            <Button
-                                variant="outline"
-                                className="flex gap-2 items-center"
-                                onClick={handleEditPlan}
-                            >
-                                <Edit className="w-4 h-4" />
-                                <span>Edit Plan</span>
-                            </Button>
-                        </div>
-                    </div>
+                    <PlanDetailsHeader
+                        plan={plan}
+                        handleExport={openExportPopup}
+                    />
 
+                    {/* Content */}
                     <div className="lg:flex gap-5">
                         {/* Periods Tabs */}
                         <PeriodsTabs
@@ -331,58 +87,19 @@ const PlanDetail = () => {
                             onPeriodClick={(periodId) =>
                                 setActivePeriod(periodId)
                             }
-                            periodUnit={periodUnit}
                         />
 
                         {/* Periods and Blocks */}
                         <Card className="flex-1 rounded-3xl px-5 w-full h-fit">
                             <CardHeader className="p-4 flex flex-row items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <div>
-                                        <h3 className="font-medium text-lg capitalize font-lilita-one">
-                                            {periodUnit} {period.index + 1}
-                                        </h3>
-                                        <div className="text-xs text-muted-foreground flex items-center gap-1">
-                                            <Clock className="w-3 h-3" />
-                                            <span>
-                                                {totalTime} {blockUnit}
-                                            </span>
-                                            <span className="mx-1">•</span>
-                                            <span>
-                                                {completedBlocks}/{totalBlocks}{" "}
-                                                {blockUnit}s completed
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
+                                <PeriodHeader period={period} plan={plan} />
                             </CardHeader>
                             <CardContent className="px-0">
                                 <DragDropContext onDragEnd={handleDragEnd}>
-                                    <Droppable
-                                        droppableId="periods"
-                                        type="PERIOD"
-                                        direction="vertical"
-                                    >
-                                        {(provided) => (
-                                            <div
-                                                {...provided.droppableProps}
-                                                ref={provided.innerRef}
-                                                className="space-y-4"
-                                            >
-                                                <DroppablePeriod
-                                                    key={period.id}
-                                                    period={period}
-                                                    index={0}
-                                                    onMarkBlockDone={
-                                                        handleMarkBlockDone
-                                                    }
-                                                    blockUnit={blockUnit}
-                                                    periodUnit={periodUnit}
-                                                />
-                                                {provided.placeholder}
-                                            </div>
-                                        )}
-                                    </Droppable>
+                                    <PeriodData
+                                        planType={plan.type}
+                                        period={period}
+                                    />
                                 </DragDropContext>
                             </CardContent>
                         </Card>
