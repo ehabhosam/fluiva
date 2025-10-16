@@ -1,6 +1,6 @@
 export default function Loading() {
     return (
-        <div className="w-full h-full min-h-screen max-h-screen flex items-center justify-center">
+        <div className="w-full h-full min-h-[50vh] max-h-screen flex items-center justify-center">
             <img
                 src="/assets/logo.png"
                 width="80"

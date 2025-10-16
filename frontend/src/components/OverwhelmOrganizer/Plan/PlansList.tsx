@@ -24,10 +24,6 @@ export default function PlansList() {
         enabled: !!user,
     });
 
-    if (isLoading) {
-        return <Loading />;
-    }
-
     return (
         <>
             <div className="flex items-center justify-between">
@@ -46,7 +42,9 @@ export default function PlansList() {
                 </Link>
             </div>
 
-            {error ? (
+            {isLoading ? (
+                <Loading />
+            ) : error ? (
                 <PlansLoadError />
             ) : plans?.length === 0 ? (
                 <CreateFirstPlan />
