@@ -108,8 +108,9 @@ const TaskInput = forwardRef<HTMLDivElement, TaskInputProps>(
                             </div>
                             <Button
                                 onClick={onAddTask}
-                                className="gradient-bg w-full sm:w-auto"
+                                className="w-full sm:w-auto text-white"
                                 disabled={!taskText.trim() || taskHours <= 0}
+                                variant="next"
                             >
                                 <Plus className="w-4 h-4 mr-1" />
                                 Add

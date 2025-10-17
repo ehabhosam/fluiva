@@ -56,3 +56,25 @@ export function formatDate(dateStr: string): string {
         year: "numeric", // "2025"
     }).format(date); // → "Jun 27, 2025"
 }
+
+export const convertTo24Hour = (hour: number, period: "AM" | "PM"): number => {
+    if (period === "AM") {
+        return hour === 12 ? 0 : hour;
+    } else {
+        return hour === 12 ? 12 : hour + 12;
+    }
+};
+
+export const convertTo12Hour = (
+    hour24: number,
+): { hour: number; period: "AM" | "PM" } => {
+    if (hour24 === 0) {
+        return { hour: 12, period: "AM" };
+    } else if (hour24 < 12) {
+        return { hour: hour24, period: "AM" };
+    } else if (hour24 === 12) {
+        return { hour: 12, period: "PM" };
+    } else {
+        return { hour: hour24 - 12, period: "PM" };
+    }
+};

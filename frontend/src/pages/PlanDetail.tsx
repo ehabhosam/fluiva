@@ -105,15 +105,17 @@ const PlanDetail = () => {
                         </Card>
                     </div>
                 </div>
-                <ExportToCalendarPopup
-                    open={isExportPopupOpen}
-                    onOpenChange={setIsExportPopupOpen}
-                    onSubmit={handleGenerateCsv}
-                    isProcessing={isProcessingCsv}
-                    csvData={csvData}
-                    planTitle={plan?.title || ""}
-                    onClearCsvData={() => setCsvData(null)}
-                />
+                {plan.type === "DAILY" && (
+                    <ExportToCalendarPopup
+                        open={isExportPopupOpen}
+                        onOpenChange={setIsExportPopupOpen}
+                        onSubmit={handleGenerateCsv}
+                        isProcessing={isProcessingCsv}
+                        csvData={csvData}
+                        planTitle={plan?.title || ""}
+                        onClearCsvData={() => setCsvData(null)}
+                    />
+                )}
             </Layout>
         </AuthGuard>
     );

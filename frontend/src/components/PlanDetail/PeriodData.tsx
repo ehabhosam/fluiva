@@ -30,7 +30,7 @@ const PeriodData: React.FC<DroppablePeriodProps> = ({ period, planType }) => {
                                     >
                                         <GridBackground />
                                         <div>
-                                            <ul className="capitalize font-lilita-one text-xs lg:text-sm h-full flex flex-col justify-between text-Fluiva-purple">
+                                            <ul className="capitalize font-lilita-one text-xs lg:text-sm h-full flex flex-col justify-between text-Fluiva-blue/60">
                                                 {[
                                                     period.blocks &&
                                                     period.blocks.length > 0

@@ -14,6 +14,14 @@ import { format } from "date-fns";
 import { CSVLink } from "react-csv";
 import { Download } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { convertTo24Hour } from "@/lib/utils";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "../ui/select";
 
 interface ExportToCalendarPopupProps {
     open: boolean;
@@ -38,16 +46,55 @@ export const ExportToCalendarPopup = ({
         format(new Date(), "yyyy-MM-dd"),
     );
     const [startHour, setStartHour] = useState<number>(9);
+    const [amPm, setAmPm] = useState<"AM" | "PM">("AM");
+    const [error, setError] = useState<string>("");
+
+    const validateInputs = () => {
+        setError("");
+
+        // Validate date
+        if (!startDate) {
+            setError("Please select a start date.");
+            return false;
+        }
+
+        const selectedDate = new Date(startDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (selectedDate < today) {
+            setError("Start date cannot be in the past.");
+            return false;
+        }
+
+        if (isNaN(selectedDate.getTime())) {
+            setError("Please enter a valid date.");
+            return false;
+        }
+
+        // Validate hour
+        if (!startHour || startHour < 1 || startHour > 12) {
+            setError("Please enter a valid hour (1-12).");
+            return false;
+        }
+
+        return true;
+    };
 
     const handleSubmit = () => {
-        if (startDate) {
-            const [year, month, day] = startDate.split("-").map(Number);
-            onSubmit(new Date(year, month - 1, day), startHour);
+        if (!validateInputs()) {
+            return;
         }
+
+        const [year, month, day] = startDate.split("-").map(Number);
+        const hour24 = convertTo24Hour(startHour, amPm);
+        onSubmit(new Date(year, month - 1, day), hour24);
     };
 
     const handleOpenChange = (isOpen: boolean) => {
         if (!isOpen) {
+            // Clear error when closing
+            setError("");
             // Delay clearing data to allow for closing animation
             setTimeout(() => {
                 onClearCsvData();
@@ -99,7 +146,7 @@ export const ExportToCalendarPopup = ({
                                 }}
                             >
                                 <Download className="w-4 h-4 mr-2" />
-                                Download CSV
+                                Download Plan
                             </CSVLink>
                         </DialogFooter>
                     </>
@@ -113,6 +160,11 @@ export const ExportToCalendarPopup = ({
                             </DialogDescription>
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
+                            {error && (
+                                <div className="text-sm text-red-600 bg-red-50 p-3 rounded-md border border-red-200">
+                                    {error}
+                                </div>
+                            )}
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label
                                     htmlFor="startDate"
@@ -136,25 +188,48 @@ export const ExportToCalendarPopup = ({
                                     htmlFor="startHour"
                                     className="text-right"
                                 >
-                                    Start Hour (0-23)
+                                    Start Time
+                                    <span className="block text-xs text-neutral-500 text-center">
+                                        (per day)
+                                    </span>
                                 </Label>
-                                <Input
-                                    id="startHour"
-                                    type="number"
-                                    value={startHour}
-                                    onChange={(e) => {
-                                        const hour = parseInt(
-                                            e.target.value,
-                                            10,
-                                        );
-                                        if (hour >= 0 && hour <= 23) {
-                                            setStartHour(hour);
+                                <div className="col-span-3 flex gap-2">
+                                    <Input
+                                        id="startHour"
+                                        type="number"
+                                        value={startHour}
+                                        onChange={(e) => {
+                                            const hour = parseInt(
+                                                e.target.value,
+                                                10,
+                                            );
+                                            if (hour >= 1 && hour <= 12) {
+                                                setStartHour(hour);
+                                            }
+                                        }}
+                                        min="1"
+                                        max="12"
+                                        className="flex-1"
+                                    />
+                                    <Select
+                                        value={amPm}
+                                        onValueChange={(value) =>
+                                            setAmPm(value as "AM" | "PM")
                                         }
-                                    }}
-                                    min="0"
-                                    max="23"
-                                    className="col-span-3"
-                                />
+                                    >
+                                        <SelectTrigger className="flex-1">
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="AM">
+                                                AM
+                                            </SelectItem>
+                                            <SelectItem value="PM">
+                                                PM
+                                            </SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
                             </div>
                         </div>
                         <DialogFooter>

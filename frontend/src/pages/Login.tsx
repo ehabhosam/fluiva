@@ -50,7 +50,7 @@ const Login = () => {
 
     return (
         <AuthGuard requireAuth={false}>
-            <div className='min-h-screen relative bg-[url("assets/bg.png")] bg-no-repeat bg-cover bg-center flex items-center justify-center p-4'>
+            <div className='font-primary min-h-screen relative bg-[url("assets/bg.png")] bg-no-repeat bg-cover bg-center flex items-center justify-center p-4'>
                 {/* Liquid Glass Floating Square */}
                 <div className="w-full max-w-md bg-white/20 backdrop-blur-xl border border-white/30 rounded-[2.5rem] shadow-2xl p-8 space-y-2 lg:space-y-4">
                     {/* Logo and Branding */}

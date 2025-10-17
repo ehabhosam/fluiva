@@ -57,7 +57,12 @@ export default function PlanDetailsHeader(props: PlanDetailsHeaderProps) {
                     onClick={handleExport}
                 >
                     <Download className="w-4 h-4" />
-                    <span>Export</span>
+                    <span>
+                        Export{" "}
+                        <span className="max-sm:hidden">
+                            To Google Calendar
+                        </span>
+                    </span>
                 </Button>
                 <Button
                     variant="outline"
