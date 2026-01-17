@@ -1,0 +1,33 @@
+# Dependencies (rebuilt in container)
+node_modules/
+npm-debug.log*
+
+# Build outputs (rebuilt in container)
+dist/
+build/
+
+# Environment files (security risk)
+.env*
+!.env.example
+
+# Git
+.git/
+.gitignore
+
+# Testing
+coverage/
+*.test.js
+
+# Logs
+logs/
+*.log
+
+# IDE/Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
