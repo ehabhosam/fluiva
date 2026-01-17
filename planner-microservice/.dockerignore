@@ -1,0 +1,18 @@
+# Git
+.git/
+.gitignore
+
+# Documentation
+*.md
+README*
+
+# Go specific
+*.test
+*.out
+coverage.*
+
+# IDE/Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
