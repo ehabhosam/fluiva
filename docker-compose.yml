@@ -1,27 +1,19 @@
 services:
-  # Database service (disabled cuz im using the supabase instance now)
-  # postgres:
-  #   image: postgres:15
-  #   environment:
-  #     POSTGRES_DB: fluiva
-  #     POSTGRES_USER: fluiva_user
-  #     POSTGRES_PASSWORD: fluiva_password
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data
-  #   ports:
-  #     - "5432:5432"
-  #   networks:
-  #     - fluiva-network
-
   planner:
-    image: fluiva-planner
+    build:
+      context: ./planner # Adjust path to where your planner Dockerfile is
+      dockerfile: Dockerfile
+    image: fluiva-planner # Optional: tags the built image
     ports:
       - "8080:8080"
     networks:
       - fluiva-network
 
   server:
-    image: fluiva-server
+    build:
+      context: ./server # Adjust path to where your server Dockerfile is
+      dockerfile: Dockerfile
+    image: fluiva-server # Optional: tags the built image
     ports:
       - "8000:8000"
     environment:
@@ -37,6 +29,8 @@ services:
   frontend:
     build:
       context: ./frontend
+      dockerfile: Dockerfile
+    image: fluiva-frontend # Optional: for consistency
     ports:
       - "5173:5173"
     networks:
