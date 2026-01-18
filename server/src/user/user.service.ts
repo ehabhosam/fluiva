@@ -13,6 +13,7 @@ export class UserService {
   }
 
   async upsertUser(dto: UpsertUserDto) {
+    console.log('[upsert dto]', dto);
     return this.prisma.user.upsert({
       where: {
         id: dto.id,

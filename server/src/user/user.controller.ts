@@ -19,8 +19,11 @@ export class UserController {
 
   @Post('upsert')
   async upsertUser(@User() user: SupabaseUser) {
+    console.log('user obj', user);
     const dto: UpsertUserDto = {
-      id: user.sub,
+      // TODO: update supabase
+      // @ts-ignore
+      id: user.id,
       email: user.email,
       name: user.user_metadata.full_name,
     };
