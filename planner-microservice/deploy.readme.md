@@ -1,32 +1,21 @@
-to deploy to the ec2 service brhm created
+This document is all what you need to deploy Fluiva to any machine. 
 
-we build the project
+First: The one time setup. 
 
-```bash
-make build
-```
+1. SSH into the machine. 
+2. Make sure the machine is authenticated into your github.
+  1. create a key
+  2. take your public key 
+  3. put it at keys in your github account settings. 
+3. Git clone the repository. 
+4. Add the environment variables:
+  1. server: /server/.env
+  2. frontend: /frontend/.env
+5. docker build images
+ 
+Second: The Every time startup: 
 
-then send the project to the instance 
-
-```bash
-rsync -avz -e "ssh -i ~/.ssh/bobkeypairs.pem" ./app ec2-user@15.185.229.21:~/
-```
-
-then ssh into the instance
-
-
-```bash
-ssh -i ~/.ssh/bobkeypairs.pem ec2-user@15.185.229.21
-```
-
-and turn app into executable
-
-```bash
-chmod +x app
-```
-
-then run the app
-
-```bash
-./app
-```
+1. git pull origin master
+2. docker build images
+3. docker compose up
+4. configure nginx (after getting some domain)
