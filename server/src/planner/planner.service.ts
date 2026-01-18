@@ -13,6 +13,8 @@ import {
 } from './planner.interfaces';
 import { PlannerConnectionError, PlannerServiceError } from './planner.errors';
 import plannerConfig from './planner.config';
+import * as dns from 'dns';
+import * as net from 'net';
 
 @Injectable()
 export class PlannerService implements OnModuleInit {
@@ -24,10 +26,7 @@ export class PlannerService implements OnModuleInit {
     @Inject(plannerConfig.KEY)
     private config: ConfigType<typeof plannerConfig>,
   ) {
-    const PROTO_PATH = join(
-      process.cwd(),
-      '../planner-microservice/proto/planner.proto',
-    );
+    const PROTO_PATH = join(process.cwd(), 'proto/planner.proto');
 
     const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
       keepCase: true,
@@ -59,7 +58,75 @@ export class PlannerService implements OnModuleInit {
       this.logger.error(
         `Failed to connect to planner microservice: ${err.message}`,
       );
+      this.logger.error(`Connection error details:`, {
+        message: err.message,
+        code: err.code,
+        details: err.details,
+        metadata: err.metadata,
+        stack: err.stack,
+        serverAddress: `${this.config.host}:${this.config.port}`,
+        timestamp: new Date().toISOString(),
+      });
+
+      // Run diagnostics
+      this.diagnoseConnection(this.config.host, this.config.port).catch(
+        (diagErr) => {
+          this.logger.error(`Diagnostics failed: ${diagErr.message}`);
+        },
+      );
     });
+  }
+
+  private async diagnoseConnection(host: string, port: number) {
+    this.logger.warn(`Starting connection diagnostics for ${host}:${port}...`);
+
+    // 1. DNS Resolution
+    try {
+      this.logger.log(`[Diagnostic] Attempting to resolve hostname: ${host}`);
+      const addresses = await new Promise<string[]>((resolve, reject) => {
+        dns.resolve(host, (err, addresses) => {
+          if (err) reject(err);
+          else resolve(addresses);
+        });
+      });
+      this.logger.log(
+        `[Diagnostic] DNS Resolution successful. Addresses: ${JSON.stringify(addresses)}`,
+      );
+    } catch (err) {
+      this.logger.error(`[Diagnostic] DNS Resolution failed: ${err.message}`);
+    }
+
+    // 2. TCP Connectivity
+    try {
+      this.logger.log(`[Diagnostic] Attempting TCP connection to ${host}:${port}`);
+      await new Promise<void>((resolve, reject) => {
+        const socket = new net.Socket();
+        const timeout = 5000;
+        socket.setTimeout(timeout);
+
+        socket.on('connect', () => {
+          this.logger.log(
+            `[Diagnostic] TCP Connection successful to ${host}:${port}`,
+          );
+          socket.destroy();
+          resolve();
+        });
+
+        socket.on('timeout', () => {
+          socket.destroy();
+          reject(new Error(`TCP Connection timed out after ${timeout}ms`));
+        });
+
+        socket.on('error', (err) => {
+          socket.destroy();
+          reject(err);
+        });
+
+        socket.connect(port, host);
+      });
+    } catch (err) {
+      this.logger.error(`[Diagnostic] TCP Connection failed: ${err.message}`);
+    }
   }
 
   private async testConnection(): Promise<void> {
