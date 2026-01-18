@@ -1,0 +1,47 @@
+services:
+  # Database service (disabled cuz im using the supabase instance now)
+  # postgres:
+  #   image: postgres:15
+  #   environment:
+  #     POSTGRES_DB: fluiva
+  #     POSTGRES_USER: fluiva_user
+  #     POSTGRES_PASSWORD: fluiva_password
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+  #   networks:
+  #     - fluiva-network
+
+  planner:
+    image: fluiva-planner
+    ports:
+      - "8080:8080"
+    networks:
+      - fluiva-network
+
+  server:
+    image: fluiva-server
+    ports:
+      - "8000:8000"
+    environment:
+      - PLANNER_SERVICE_HOST=planner
+      - PLANNER_SERVICE_PORT=8080
+    env_file:
+      - ./server/.env
+    depends_on:
+      - planner
+    networks:
+      - fluiva-network
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5173:5173"
+    networks:
+      - fluiva-network
+
+networks:
+  fluiva-network:
+    driver: bridge

@@ -18,6 +18,7 @@ RUN adduser --system --uid 1001 nestjs
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/generated ./generated
 COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/proto ./proto
 COPY package*.json ./
 
 # Install only production dependencies
