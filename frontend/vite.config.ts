@@ -9,6 +9,9 @@ export default defineConfig(({ mode }) => ({
     port: 5173,
     allowedHosts: ["fluiva.ehabhosam.app"],
   },
+  preview: {
+    allowedHosts: ["fluiva.ehabhosam.app"],
+  },
   plugins: [react()].filter(Boolean),
   resolve: {
     alias: {
