@@ -7,10 +7,10 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 5173,
-    allowedHosts: ["fluiva.ehabhosam.app"],
+    allowedHosts: true,
   },
   preview: {
-    allowedHosts: ["fluiva.ehabhosam.app"],
+    allowedHosts: true,
   },
   plugins: [react()].filter(Boolean),
   resolve: {
