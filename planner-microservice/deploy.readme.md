@@ -11,7 +11,8 @@ First: The one time setup.
 4. Add the environment variables:
   1. server: /server/.env
   2. frontend: /frontend/.env
-5. docker build images
+5. make sure docker is installed
+6. docker build images
  
 Second: The Every time startup: 
 
