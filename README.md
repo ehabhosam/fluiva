@@ -1,7 +1,11 @@
 # Fluiva
 A productivity web-app that helps people empty their minds out of their tasks and routines during a period, and schedules it for them.
 
-**Link to project:** https://Fluiva.vercel.app
+
+
+```
+**Link to project:** [https://fluiva.ehabhosam.app](https://fluiva.ehabhosam.app)
+```
 
 ![alt tag](http://placecorgi.com/1200/650)
 
