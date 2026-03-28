@@ -1,7 +1,7 @@
 services:
   planner:
     build:
-      context: ./planner # Adjust path to where your planner Dockerfile is
+      context: ./planner-microservice # Adjust path to where your planner Dockerfile is
       dockerfile: Dockerfile
     image: fluiva-planner # Optional: tags the built image
     ports:
