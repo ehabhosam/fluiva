@@ -66,6 +66,12 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.1.3"
   },
+  "overrides": {
+    "path-to-regexp": "^8.4.0",
+    "picomatch": "^4.0.4",
+    "ajv": "^8.17.1",
+    "effect": "^3.20.0"
+  },
   "jest": {
     "moduleFileExtensions": [
       "js",
